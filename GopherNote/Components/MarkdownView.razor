@@ -1,0 +1,11 @@
+﻿@* Этот компонент берет сырой текст с Markdown-разметкой, прогоняет его через
+библиотеку Markdig и выводит на экран уже отформатированный HTML *@
+@using Markdig
+<div class="markdown-body">
+    @((MarkupString)HtmlContent)
+</div>
+
+@code{
+    [Parameter] public string Content { get; set; } = string.Empty;
+    private string HtmlContent => Markdown.ToHtml(Content ?? string.Empty);
+}
