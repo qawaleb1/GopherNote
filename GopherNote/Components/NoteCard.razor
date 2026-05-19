@@ -6,7 +6,7 @@
         <h4>@Note.Title</h4>
     </div>
     <div class="note-preview">
-        <!--Вставить движок MD-->
+        <MarkdownView Content="@(Note.Content.Length > 100 ? Note.Content.Substring(0,100) + "..." : Note.Content)"/>
     </div>
     <div class="note-footer">
         <div class="tags">
