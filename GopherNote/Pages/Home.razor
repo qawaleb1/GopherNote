@@ -1,6 +1,31 @@
 ﻿@page "/"
-
+@using GopherNote.Components
+<!--Тестовое заполнение Home, чтобы видеть верстку-->
 <PageTitle>Home</PageTitle>
 
+<main class="content">
+    <div class="notes-grid">
+        <NoteCard Note="testNote" OnPinToggled="HandlePinToggled" OnEdit="HandleEdit"/>
+    </div>
+</main>
 
+@code{
+        // Тестовая заметка
+        private Note testNote = new Note
+        {
+            Title = "ZXC",
+            Content = "Бурмалда, Хаммммам, Турецкая Баня",
+            IsPinned = true,
+            CreatedAt = DateTime.Now,
+        };
+        // Пустые обработчики
+        private void HandlePinToggled(Note note)
+        {
+            Console.WriteLine($"Pin toggled: {note.Title}");
+        }
 
+        private void HandleEdit(Note note)
+        {
+            Console.WriteLine($"Edit: {note.Title}");
+        }
+}
