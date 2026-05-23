@@ -1,0 +1,12 @@
+﻿.btn-edit{
+    background: black;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: background 0.2s;
+    border: none
+}
+.btn-edit:hover{
+    background: gray;
+}

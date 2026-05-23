@@ -1,0 +1,46 @@
+﻿
+.layout{
+    display: grid;
+    grid-template-columns: 300px auto;
+    gap: 2rem
+}
+
+.sidebar{
+    padding: 1.5rem;
+    border-right: 2px solid #dddddd;
+}
+
+.btn-black{
+    background: black;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.btn-black:hover{
+    background: gray;
+}
+
+.notes-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.filters{
+    margin-top: 2rem;
+}
+
+.filters input,
+.filters select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
