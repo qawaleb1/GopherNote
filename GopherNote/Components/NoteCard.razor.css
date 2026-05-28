@@ -13,7 +13,7 @@
     transition: background-color 0.3s ease; /* Плавная смена фона при клике */
 }
 
-/* ЗАМЕТКА СО ЗВЕЗДОЙ (становится серой) */
+
 .note-card.pinned-style {
     background-color: #f1f5f9; /* Красивый благородный серый оттенок */
     border-color: #e2e8f0;     /* Чуть более выраженная рамка для контраста */
@@ -27,7 +27,7 @@
     display: flex;
     align-items: center;
     gap: 10px; /* Отступ между звездочкой и текстом */
-    margin-bottom: 8px; /* Отступ до основного текста */
+    margin-bottom: 8px; 
 }
 
 /* Иконка звездочки */
