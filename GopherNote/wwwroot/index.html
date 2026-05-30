@@ -12,23 +12,174 @@
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="GopherNote.styles.css" rel="stylesheet" />
     <script type="importmap"></script>
+
+    <style>
+
+        /* Сброс для body */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+
+        /* Контейнер приложения */
+        #app {
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Центрируем лоадер только до загрузки основного контента */
+        #app:not(:has(.layout)) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Карточка загрузчика  */
+        .loading-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 32px;
+            background-color: #ffffff;
+            border: 1px solid #eef2f6;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 16px -6px rgba(0, 0, 0, 0.01);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SVG загрузчика */
+        .loading-progress {
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+        }
+
+        .loading-progress circle {
+            fill: none;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transform-origin: 50px 50px;
+        }
+
+        /* Трек (фоновая дуга) */
+        .loading-progress circle:first-child {
+            stroke: #eef2f6;
+        }
+
+        /* Прогресс (активная дуга) */
+        .loading-progress circle:last-child {
+            stroke: #6366f1;
+            stroke-dasharray: 150;
+            stroke-dashoffset: 0;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Текст загрузки */
+        .loading-text {
+            margin-top: 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Анимация вращения */
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Анимация пульсации дуги */
+        @keyframes pulse {
+            0% {
+                stroke-dashoffset: 150;
+            }
+            50% {
+                stroke-dashoffset: 50;
+            }
+            100% {
+                stroke-dashoffset: 150;
+            }
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 6px;
+            margin-top: 16px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: #6366f1;
+            border-radius: 50%;
+            opacity: 0;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
+<div id="app">
+    <div class="loading-wrapper">
+        <svg class="loading-progress" viewBox="0 0 100 100">
+            <circle r="40" cx="50" cy="50" />
+            <circle r="40" cx="50" cy="50" />
         </svg>
-        <div class="loading-progress-text"></div>
+        <div class="loading-text">GopherNote</div>
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
+</div>
 
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
+<div id="blazor-error-ui" style="display: none;">
+    <div style="padding: 20px; text-align: center; background: #fee2e2; border-radius: 12px; margin: 20px;">
+        Произошла ошибка загрузки.
+        <a href="." class="reload" style="color: #6366f1;">Обновить страницу</a>
     </div>
-    <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+</div>
+
+<script src="_framework/blazor.webassembly.js"></script>
+<script src="js/speech.js"></script>
 </body>
 
 </html>
