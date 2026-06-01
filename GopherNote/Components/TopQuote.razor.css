@@ -3,11 +3,11 @@
     width: 100%;
     margin: 0 0 24px 0;
     padding: 20px 24px;
-    background-color: #f8f9fa;
-    border-left: 4px solid #6366f1;
-    border-right: 4px solid #6366f1;
+    background-color: var(--bg-quote);
+    border-left: 4px solid var(--accent);
+    border-right: 4px solid var(--accent);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-sm);
     box-sizing: border-box;
 }
 
@@ -15,7 +15,7 @@
 .top-quote p {
     margin: 0;
     font-size: 1rem;
-    color: #334155;
+    color: var(--text-muted);
     line-height: 1.5;
     text-align: center;
 }
@@ -24,12 +24,12 @@
 .top-quote p i::before {
     content: "«";
     margin-right: 4px;
-    color: #6366f1;
+    color: var(--accent);
 }
 
 .top-quote p i::after {
     content: "»";
     margin-left: 4px;
-    color: #6366f1;
+    color: var(--accent);
     font-weight: 600;
 }

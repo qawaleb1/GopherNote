@@ -1,15 +1,15 @@
-﻿/* Главный контейнер редактора */
+﻿﻿/* Главный контейнер редактора */
 .editor-container {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding: 2rem;
-    background: white;
-    border: 1px solid #eef2f6; /* Мягкая рамка как у карточек */
-    border-radius: 16px;       /* Плавное скругление */
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
     max-width: 900px;
     margin: 20px auto;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03); /* Нежная тень */
+    box-shadow: var(--shadow-card);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -20,32 +20,33 @@
     font-weight: 600;
     padding: 0.5rem 0;
     border: none;
-    border-bottom: 2px solid #e2e8f0;
-    color: #0f172a; /* Глубокий темный цвет */
+    border-bottom: 2px solid var(--border-medium);
+    background: transparent;
+    color: var(--text-primary);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .title-input:focus, .title-input:hover {
     outline: none;
-    border-bottom-color: #6366f1; /* Фиолетовый акцент при фокусе */
+    border-bottom-color: var(--accent);
 }
 
 /* Кнопка закрепления (Звезда в редакторе) */
 .pin-icon {
-    background: #f8f9fa;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-input);
+    border: 1px solid var(--border-medium);
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
     white-space: nowrap;
-    color: #f59e0b; /* Золотой цвет звезды */
+    color: var(--pin-color);
     font-weight: 500;
     transition: all 0.2s ease;
 }
 
 .pin-icon:hover {
-    background: #f1f5f9;
-    color: #d97706;
+    background: var(--accent-light);
+    color: var(--pin-hover);
     transform: scale(1.02);
 }
 
@@ -58,23 +59,23 @@
 
 .editor-toolbar select {
     padding: 0.5rem 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-medium);
     border-radius: 8px;
-    background: white;
-    color: #475569;
+    background: var(--bg-card);
+    color: var(--text-muted);
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.2s;
 }
 
 .editor-toolbar select:hover {
-    background: #f8f9fa;
-    border-color: #cbd5e1;
+    background: var(--bg-input);
+    border-color: var(--border-light);
 }
 
-/* Главная фиолетовая кнопка (бывшая btn-black) */
+/* Главная фиолетовая кнопка */
 .btn-black {
-    background: #6366f1; /* Фиолетовый цвет как на главной */
+    background: var(--accent);
     color: white;
     border-radius: 8px;
     cursor: pointer;
@@ -86,7 +87,7 @@
 }
 
 .btn-black:hover {
-    background: #4f46e5;
+    background: var(--accent-hover);
 }
 
 .btn-black:active {
@@ -95,7 +96,7 @@
 
 /* Кнопка удаления */
 .btn-danger {
-    background: #ef4444; /* Более современный красный */
+    background: var(--error);
     color: white;
     border-radius: 8px;
     cursor: pointer;
@@ -107,14 +108,14 @@
 }
 
 .btn-danger:hover {
-    background: #dc2626;
+    background: var(--error-hover);
 }
 
-/* Второстепенная кнопка Отмена (бывшая btn-outline) */
+/* Второстепенная кнопка Отмена */
 .btn-outline {
     background: transparent;
-    border: 1px solid #cbd5e1;
-    color: #475569;
+    border: 1px solid var(--border-medium);
+    color: var(--text-muted);
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
@@ -124,9 +125,9 @@
 }
 
 .btn-outline:hover {
-    background: #f8f9fa;
-    border-color: #94a3b8;
-    color: #0f172a;
+    background: var(--bg-input);
+    border-color: var(--border-light);
+    color: var(--text-primary);
 }
 
 /* Контейнеры действий и тела */
@@ -154,11 +155,12 @@
     flex: 1;
     width: 100%;
     padding: 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-medium);
     border-radius: 12px;
     font-family: 'Fira Code', Consolas, Monaco, monospace;
     font-size: 0.95rem;
-    color: #334155;
+    background: var(--bg-input);
+    color: var(--text-primary);
     line-height: 1.6;
     resize: vertical;
     min-height: 250px;
@@ -167,17 +169,17 @@
 
 .md-editor:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); /* Легкое фиолетовое свечение */
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
 }
 
 /* Окно предпросмотра (Preview) */
 .md-preview {
     padding: 1rem;
-    border: 1px solid #eef2f6;
+    border: 1px solid var(--border-light);
     border-radius: 12px;
-    background: #f8f9fa; /* Мягкий фон как у вашей цитаты сверху */
-    color: #475569;
+    background: var(--bg-quote);
+    color: var(--text-muted);
     font-size: 0.95rem;
     line-height: 1.6;
     overflow-y: auto;
@@ -187,11 +189,11 @@
 /* Голосовой ввод */
 .voice-interim {
     padding: 0.75rem 1rem;
-    background: #fffbeb;
-    border: 1px solid #fde68a;
+    background: var(--voice-bg);
+    border: 1px solid var(--voice-border);
     border-radius: 8px;
     margin-top: 0.5rem;
     font-style: italic;
-    color: #b45309;
+    color: var(--voice-text);
     font-size: 0.9rem;
 }

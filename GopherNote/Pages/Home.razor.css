@@ -1,11 +1,20 @@
-﻿.layout {
+﻿﻿/* Основной контейнер - меняем на flex для вертикального расположения */
+.layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: var(--bg-page);
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Контейнер для сайдбара и контента */
+.main-content {
     display: grid;
     grid-template-columns: 320px auto;
     gap: 2rem;
-    padding: 20px;
 }
 
-/* Обновленный дизайн боковой панели (Sidebar) */
 .sidebar {
     padding: 2rem;
     background-color: var(--bg-sidebar);
@@ -85,4 +94,9 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
+}
+
+/* Контентная область (правая часть) */
+.content {
+    min-width: 0; /* Предотвращает переполнение */
 }
