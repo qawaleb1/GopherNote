@@ -1,0 +1,54 @@
+﻿@inject IJSRuntime JS
+
+<button @onclick="ToggleTheme" class="theme-toggle-btn">
+    @if (isDark)
+    {
+        <span>☀️</span>
+        <span>Светлая тема</span>
+    }
+    else
+    {
+        <span>🌙</span>
+        <span>Тёмная тема</span>
+    }
+</button>
+
+@code {
+    private bool isDark = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+            if (savedTheme == "dark")
+            {
+                isDark = true;
+                await SetTheme(true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading theme: {ex.Message}");
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        isDark = !isDark;
+        await SetTheme(isDark);
+        await JS.InvokeVoidAsync("localStorage.setItem", "theme", isDark ? "dark" : "light");
+    }
+
+    private async Task SetTheme(bool dark)
+    {
+        if (dark)
+        {
+            await JS.InvokeVoidAsync("eval", "document.documentElement.classList.add('dark-theme')");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("eval", "document.documentElement.classList.remove('dark-theme')");
+        }
+    }
+}
