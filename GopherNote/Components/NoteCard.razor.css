@@ -43,6 +43,13 @@
     color: var(--text-primary);
 }
 
+.note-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: auto;
+}
+
 /* Звездочка */
 .pin-icon {
     font-size: 1.15rem;
@@ -61,6 +68,7 @@
     color: var(--text-preview);
     line-height: 1.5;
     margin: 0 0 24px 0;
+    flex-grow: 1;
 }
 
 /* Кнопка Редактировать */
