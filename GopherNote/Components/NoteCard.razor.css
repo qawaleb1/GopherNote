@@ -36,11 +36,42 @@
     gap: 10px;
     margin-bottom: 8px;
 }
+
+/* Стили заголовка */
 .note-header h4 {
     margin: 0;
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--text-primary);
+
+    /* Новые свойства: если заголовок не влезает, он обрезается с многоточием */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Текст превью */
+.note-preview {
+    font-size: 0.95rem;
+    color: var(--text-preview);
+    line-height: 1.5;
+    margin: 0 0 24px 0;
+
+    /* Новые свойства: заставляют длинные слова без пробелов переноситься на новую строку */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    overflow: hidden;
+}
+
+/* На всякий случай разрешим перенос элементов в тулбаре редактора, 
+   чтобы кнопка добавления тега не сплющивала соседние элементы */
+.editor-toolbar {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 /* Звездочка */
@@ -55,13 +86,6 @@
     transform: scale(1.1);
 }
 
-/* Текст превью */
-.note-preview {
-    font-size: 0.95rem;
-    color: var(--text-preview);
-    line-height: 1.5;
-    margin: 0 0 24px 0;
-}
 
 /* Кнопка Редактировать */
 .btn-edit {
@@ -78,4 +102,38 @@
 }
 .btn-edit:hover {
     background: var(--accent-hover);
+}
+
+/* Выталкиваем превью наверх, чтобы теги и кнопка всегда были прижаты ко дну карточки */
+.note-preview {
+    flex-grow: 1;
+}
+
+/* Стили для контейнера тегов на карточке */
+.note-tags {
+    display: flex;
+    flex-wrap: wrap; /* Если тегов много, они перенесутся на новую строку */
+    gap: 6px;
+    margin-bottom: 15px; /* Отступ от кнопки "Редактировать" */
+}
+
+/* Внешний вид самих тегов */
+.tag {
+    background-color: var(--bg-input, #f0f0f0);
+    color: var(--text-primary, #333);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    border: 1px solid var(--border-light, #ccc);
+    word-break: break-all; /* На случай невероятно длинного тега без пробелов */
+}
+
+/* Делаем кнопку на всю ширину карточки (опционально, но так UI выглядит гораздо лучше) */
+.note-footer {
+    width: 100%;
+}
+
+.btn-edit {
+    width: 100%;
+    text-align: center;
 }
