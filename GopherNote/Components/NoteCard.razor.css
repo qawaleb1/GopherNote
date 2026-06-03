@@ -105,3 +105,78 @@
 .btn-edit:hover {
     background: var(--accent-hover);
 }
+
+/* Контейнер кнопки "+ еще X" */
+.tag-more {
+    position: relative;
+    cursor: pointer;
+}
+
+.tag-more .tooltip-grid {
+    position: absolute;
+    top: 105%;                    /* Появляется под кнопкой */
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px) scale(0.95);
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+    /* Сетка-таблица */
+    display: grid;
+    grid-template-columns: repeat(3, minmax(60px, auto));
+    gap: 6px;
+    width: max-content;
+
+    /* ЖЕСТКОЕ ОГРАНИЧЕНИЕ ВЫСОТЫ И СКРОЛЛ */
+    max-height: 200px;            /* Окно не вырастет больше этой высоты (примерно 5-6 рядов) */
+    overflow-y: auto;             /* Включает вертикальную прокрутку внутри таблички */
+    overflow-x: hidden;           /* Запрещает горизонтальный скролл */
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 999;
+}
+
+/* Красивое оформление скроллбара внутри таблички тегов */
+.tag-more .tooltip-grid::-webkit-scrollbar {
+    width: 6px;                   /* Ширина полосы прокрутки */
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-track {
+    background: #1f2937;          /* Фон дорожки скролла */
+    border-radius: 8px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-thumb {
+    background: #4b5563;          /* Цвет самого ползунка */
+    border-radius: 8px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;          /* Цвет ползунка при наведении */
+}
+
+
+
+/* Стили для мини-тегов внутри таблички */
+.tooltip-tag {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;          /* Чтобы тег не переносился внутри ячейки */
+    text-align: center;
+}
+
+/* Показываем табличку при наведении */
+.tag-more:hover .tooltip-grid {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1); /* Возвращается в исходную точку */
+}
+
+

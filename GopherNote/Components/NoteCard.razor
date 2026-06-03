@@ -19,12 +19,31 @@
     @if (Note.Tags != null && Note.Tags.Any())
     {
         <div class="note-tags">
-            @foreach (var tag in Note.Tags)
+            @foreach (var tag in Note.Tags.Take(5))
             {
                 <span class="tag">#@tag</span>
             }
+            
+            @if (Note.Tags.Count > 5)
+            {
+                <span class="tag tag-more">
+                    + @(Note.Tags.Count - 5)
+                    
+                    @* Скрытая табличка (сетка) с остальными тегами *@
+                    <div class="tooltip-grid">
+                        @foreach (var tag in Note.Tags.Skip(5))
+                        {
+                            <span class="tooltip-tag">#@tag</span>
+                        }
+                    </div>
+                </span>
+            }
         </div>
     }
+
+
+
+
 
     <div class="note-footer">
         <button class="btn-edit" @onclick="EditNote">Редактировать</button>
