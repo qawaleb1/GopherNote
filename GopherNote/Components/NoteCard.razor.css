@@ -114,14 +114,20 @@
 
 .tag-more .tooltip-grid {
     position: absolute;
-    top: 105%;                    /* Появляется под кнопкой */
-    left: 50%;
-    transform: translateX(-50%) translateY(-5px) scale(0.95);
+
+    /* Прижимаем к правому нижнему углу кнопки '+ 67' */
+    bottom: 100%;                 /* Растет строго ВВЕРХ */
+    right: 0;                     /* Растет строго ВЛЕВО */
+
+    /* Небольшое смещение для красивой анимации */
+    transform: translateY(8px) scale(0.95);
+    transform-origin: bottom right; /* Точка анимации из правого нижнего угла */
+
     background-color: #1f2937;
     border: 1px solid #374151;
     padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5);
 
     /* Сетка-таблица */
     display: grid;
@@ -129,16 +135,16 @@
     gap: 6px;
     width: max-content;
 
-    /* ЖЕСТКОЕ ОГРАНИЧЕНИЕ ВЫСОТЫ И СКРОЛЛ */
-    max-height: 200px;            /* Окно не вырастет больше этой высоты (примерно 5-6 рядов) */
-    overflow-y: auto;             /* Включает вертикальную прокрутку внутри таблички */
-    overflow-x: hidden;           /* Запрещает горизонтальный скролл */
+    /* Ограничение высоты и скролл */
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
     z-index: 999;
-}
+}   
 
 /* Красивое оформление скроллбара внутри таблички тегов */
 .tag-more .tooltip-grid::-webkit-scrollbar {
@@ -176,7 +182,7 @@
 .tag-more:hover .tooltip-grid {
     opacity: 1;
     pointer-events: auto;
-    transform: translateX(-50%) translateY(0) scale(1); /* Возвращается в исходную точку */
+    transform: translateY(0) scale(1);
 }
 
 
