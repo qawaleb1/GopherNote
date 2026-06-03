@@ -52,3 +52,19 @@ window.speechInterop = {
         }
     }
 };
+window.getTextareaSelection = (elementId) => {
+    const el = document.getElementById(elementId);
+    if (!el) return { start: 0, end: 0 };
+    return {
+        start: el.selectionStart,
+        end: el.selectionEnd
+    };
+};
+
+window.setTextareaSelection = (elementId, start, end) => {
+    const el = document.getElementById(elementId);
+    if (el) {
+        el.focus();
+        el.setSelectionRange(start, end);
+    }
+};
