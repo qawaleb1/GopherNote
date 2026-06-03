@@ -74,6 +74,13 @@
     flex-wrap: wrap;
 }
 
+.note-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: auto;
+}
+
 /* Звездочка */
 .pin-icon {
     font-size: 1.15rem;
@@ -86,6 +93,14 @@
     transform: scale(1.1);
 }
 
+/* Текст превью */
+.note-preview {
+    font-size: 0.95rem;
+    color: var(--text-preview);
+    line-height: 1.5;
+    margin: 0 0 24px 0;
+    flex-grow: 1;
+}
 
 /* Кнопка Редактировать */
 .btn-edit {

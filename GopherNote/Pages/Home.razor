@@ -32,7 +32,11 @@
         <main class="content">
             @if (isEditing)
             {
-                <EditNote Note="currentEditingNote" OnSave="SaveNote" OnCancel="CancelEdit" OnDelete="DeleteNote" />
+                <EditNote Note="currentEditingNote" 
+                          IsNewNote="@(!allNotes.Any(n => n.Id == currentEditingNote.Id))"
+                          OnSave="SaveNote" 
+                          OnCancel="CancelEdit" 
+                          OnDelete="DeleteNote" />
             }
             else
             {

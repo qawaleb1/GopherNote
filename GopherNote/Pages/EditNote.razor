@@ -1,6 +1,7 @@
 ﻿@inject SpeechService SpeechService
 @implements IDisposable
 
+
 <div class="editor-container">
     <div class="editor-header">
         <input class="title-input" @bind="Note.Title" placeholder="Заголовок заметки..." />
@@ -68,7 +69,7 @@
         <button class="btn-black" @onclick="() => OnSave.InvokeAsync(Note)">Сохранить</button>
         <button class="btn-outline" @onclick="() => OnCancel.InvokeAsync()">Отмена</button>
         
-        @if (Note.Id != Guid.Empty)
+        @if (!IsNewNote)
         {
             <button class="btn-danger" @onclick="() => OnDelete.InvokeAsync(Note)">Удалить</button>
         }
@@ -79,6 +80,9 @@
     [Parameter] public Note Note { get; set; } = new();
     [Parameter] public EventCallback<Note> OnSave { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public bool IsNewNote { get; set; } = false;
+    
+    // ДОБАВИЛИ ПРОПУЩЕННЫЙ ПАРАМЕТР
     [Parameter] public EventCallback<Note> OnDelete { get; set; } 
     
     private bool isRecording = false;
