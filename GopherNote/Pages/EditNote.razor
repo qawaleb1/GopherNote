@@ -23,7 +23,30 @@
         <button class="@(isRecording ? "btn-danger" : "btn-black")" @onclick="ToggleRecording">
             @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
         </button>
+        
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <input type="text" 
+                   placeholder="Новый тег... (Enter)" 
+                   @bind="newTag" 
+                   @bind:event="oninput" 
+                   @onkeyup="HandleTagKeyUp" 
+                   style="padding: 0.5rem; border: 1px solid var(--border-medium); border-radius: 8px; width: 140px; background: var(--bg-input); color: var(--text-primary);" />
+            <button class="btn-outline" style="padding: 0.5rem 1rem;" @onclick="AddTag">Добавить</button>
+        </div>
     </div>
+
+    @if (Note.Tags != null && Note.Tags.Any())
+    {
+        <div class="tags" style="display: flex; gap: 8px; flex-wrap: wrap;">
+            @foreach(var tag in Note.Tags)
+            {
+                <span class="tag" style="background: var(--bg-input); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; border: 1px solid var(--border-light); color: var(--text-primary);">
+                    #@tag
+                    <span class="remove-tag" style="color: var(--error); cursor: pointer; margin-left: 5px; font-weight: bold;" @onclick="() => RemoveTag(tag)">×</span>
+                </span>
+            }
+        </div>
+    }
 
     <div class="editor-body">
         <div class="textarea-wrapper">
@@ -37,7 +60,7 @@
             }
         </div>
         
-        <div class="md-preview">
+        <div class="md-preview" style="background-color: @(string.IsNullOrEmpty(Note.Color) ? "var(--bg-quote)" : Note.Color);">
             <MarkdownView Content="@Note.Content" />
         </div>
     </div>
@@ -64,11 +87,50 @@
     
     private bool isRecording = false;
     private string interimText = "Говорите...";
+    
+    // Переменная для хранения введенного тега
+    private string newTag = "";
+    
+    // Метод перехвата нажатия клавиш в поле ввода тега
+    private void HandleTagKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddTag();
+        }
+    }
 
     protected override void OnInitialized()
     {
+        // Защита от NullReferenceException
+        if (Note.Tags == null)
+        {
+            Note.Tags = new List<string>();
+        }
+
         SpeechService.OnRecognized += HandleSpeechRecognized;
         SpeechService.OnEnded += HandleSpeechEnded;
+    }
+
+    // Логика добавления тега
+    private void AddTag()
+    {
+        if (!string.IsNullOrWhiteSpace(newTag))
+        {
+            var cleanedTag = newTag.Trim().Replace("#", "");
+            // Исключаем дубликаты
+            if (!Note.Tags.Contains(cleanedTag, StringComparer.OrdinalIgnoreCase))
+            {
+                Note.Tags.Add(cleanedTag);
+            }
+            newTag = ""; // Очищаем поле после успешного добавления
+        }
+    }
+
+    // Логика удаления тега по клику на "крестик"
+    private void RemoveTag(string tag)
+    {
+        Note.Tags.Remove(tag);
     }
 
     private async Task ToggleRecording()

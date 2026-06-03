@@ -5,16 +5,22 @@
         <span class="pin-icon" @onclick="TogglePin">@(Note.IsPinned ? "★" : "☆")</span>
         <h4>@Note.Title</h4>
     </div>
+    
     <div class="note-preview">
         <MarkdownView Content="@(Note.Content.Length > 100 ? Note.Content.Substring(0,100) + "..." : Note.Content)"/>
     </div>
-    <div class="note-footer">
-        <div class="tags">
+    
+    @if (Note.Tags != null && Note.Tags.Any())
+    {
+        <div class="note-tags">
             @foreach (var tag in Note.Tags)
             {
                 <span class="tag">#@tag</span>
             }
         </div>
+    }
+
+    <div class="note-footer">
         <button class="btn-edit" @onclick="EditNote">Редактировать</button>
     </div>
 </div>
