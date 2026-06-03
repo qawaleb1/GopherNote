@@ -36,3 +36,67 @@ body {
 .markdown-body strong {
     color: var(--text-primary);
 }
+/* Обновленная панель инструментов (теперь в две строки) */
+.editor-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* Верхний ряд с основными кнопками */
+.toolbar-main-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Контейнер тегов в верхнем ряду */
+.toolbar-tag-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.toolbar-tag-input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    width: 140px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+/* Нижний ряд: Панель форматирования Markdown */
+.markdown-toolbar {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    justify-content: flex-start; /* Прижимает кнопки к левому краю над полем ввода */
+    width: 100%;
+}
+
+
+/* Сверхкомпактные кнопки Markdown */
+.btn-md-format {
+    padding: 0 !important;       /* Убираем внутренние отступы */
+    width: 28px;                 /* Фиксированная маленькая ширина */
+    height: 28px;                /* Фиксированная маленькая высота */
+    font-size: 0.75rem !important; /* Уменьшенный размер текста */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    line-height: 1;
+}
+
+/* Разделитель между группами кнопок */
+.toolbar-divider {
+    color: var(--border-medium);
+    margin: 0 4px;
+    user-select: none;
+    font-size: 0.85rem;
+}
