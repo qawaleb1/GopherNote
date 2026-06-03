@@ -1,6 +1,6 @@
 ﻿@inject SpeechService SpeechService
+@inject IJSRuntime JS
 @implements IDisposable
-
 
 <div class="editor-container">
     <div class="editor-header">
@@ -15,9 +15,9 @@
         </select>
         
         <select @bind="Note.Color">
-            <option value="#ffffff">Белый</option>
-            <option value="#f5f5f5">Светло-серый</option>
-            <option value="#e0e0e0">Серый</option>
+            <option value="bg-white">Базовый</option>
+            <option value="bg-light-gray">Альтернативный 1</option>
+            <option value="bg-gray">Альтернативный 2</option>
         </select>
 
         <button class="@(isRecording ? "btn-danger" : "btn-black")" @onclick="ToggleRecording">
@@ -50,7 +50,7 @@
 
     <div class="editor-body">
         <div class="textarea-wrapper">
-            <textarea class="md-editor" @bind="Note.Content" @bind:event="oninput" placeholder="Пишите здесь..."></textarea>
+            <textarea id="md-editor-textarea" class="md-editor" @bind="Note.Content" @bind:event="oninput" placeholder="Пишите здесь..."></textarea>
             
             @if (isRecording)
             {
@@ -60,7 +60,12 @@
             }
         </div>
         
-        <div class="md-preview" style="background-color: @(string.IsNullOrEmpty(Note.Color) ? "var(--bg-quote)" : Note.Color);">
+        @{
+            var previewColorClass = "bg-white";
+            if (Note.Color == "#f5f5f5" || Note.Color == "bg-light-gray") previewColorClass = "bg-light-gray";
+            if (Note.Color == "#e0e0e0" || Note.Color == "bg-gray") previewColorClass = "bg-gray";
+        }
+        <div class="md-preview @previewColorClass" style="border: 1px solid var(--border-light); border-radius: 12px; padding: 1rem;">
             <MarkdownView Content="@Note.Content" />
         </div>
     </div>
@@ -81,53 +86,38 @@
     [Parameter] public EventCallback<Note> OnSave { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public bool IsNewNote { get; set; } = false;
-    
-    // ДОБАВИЛИ ПРОПУЩЕННЫЙ ПАРАМЕТР
     [Parameter] public EventCallback<Note> OnDelete { get; set; } 
     
     private bool isRecording = false;
     private string interimText = "Говорите...";
-    
-    // Переменная для хранения введенного тега
     private string newTag = "";
-    
-    // Метод перехвата нажатия клавиш в поле ввода тега
+
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
-        {
-            AddTag();
-        }
+        if (e.Key == "Enter") AddTag();
     }
 
     protected override void OnInitialized()
     {
-        // Защита от NullReferenceException
-        if (Note.Tags == null)
-        {
-            Note.Tags = new List<string>();
-        }
+        if (Note.Tags == null) Note.Tags = new List<string>();
 
         SpeechService.OnRecognized += HandleSpeechRecognized;
         SpeechService.OnEnded += HandleSpeechEnded;
     }
 
-    // Логика добавления тега
     private void AddTag()
     {
         if (!string.IsNullOrWhiteSpace(newTag))
         {
             var cleanedTag = newTag.Trim().Replace("#", "");
-            // Исключаем дубликаты
             if (!Note.Tags.Contains(cleanedTag, StringComparer.OrdinalIgnoreCase))
             {
                 Note.Tags.Add(cleanedTag);
             }
-            newTag = ""; // Очищаем поле после успешного добавления
+            newTag = "";
         }
     }
 
-    // Логика удаления тега по клику на "крестик"
     private void RemoveTag(string tag)
     {
         Note.Tags.Remove(tag);
@@ -150,12 +140,10 @@
     private void HandleSpeechRecognized(string final, string interim)
     {
         interimText = string.IsNullOrWhiteSpace(interim) ? "Говорите..." : interim;
-
         if (!string.IsNullOrWhiteSpace(final))
         {
             Note.Content += (string.IsNullOrWhiteSpace(Note.Content) ? "" : " ") + final;
         }
-        
         StateHasChanged();
     }
 
@@ -169,6 +157,14 @@
     {
         SpeechService.OnRecognized -= HandleSpeechRecognized;
         SpeechService.OnEnded -= HandleSpeechEnded;
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("setupMarkdownTextarea", "md-editor-textarea");
+        }
     }
 
     private void TogglePin() => Note.IsPinned = !Note.IsPinned;

@@ -181,6 +181,31 @@
 
 <script src="_framework/blazor.webassembly.js"></script>
 <script src="js/speech.js"></script>
+
+<script>
+    window.setupMarkdownTextarea = function (elementId) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        el.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Отменяем стандартный перенос
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                const val = this.value;
+                const insert = "  \n"; // Те самые два пробела и перенос для MD
+
+                // Вставляем текст ровно в позицию курсора
+                this.value = val.substring(0, start) + insert + val.substring(end);
+
+                // Возвращаем курсор на место
+                this.selectionStart = this.selectionEnd = start + insert.length;
+
+                // Оповещаем Blazor, что текст изменился, чтобы обновить превью
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+    };
+</script>
 </body>
 
 </html>
