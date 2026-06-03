@@ -2,9 +2,15 @@
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* Привязываем глобальный фон страницы к body, чтобы при скролле всё было ок */
+    background-color: var(--bg-page);
+    transition: background-color 0.3s ease;
 }
 
 .layout {
     display: flex;
-    height: calc(100vh - 41px);
+    min-height: calc(100vh - 41px);
+    height: auto;
+    background-color: var(--bg-page);
+    transition: background-color 0.3s ease;
 }
