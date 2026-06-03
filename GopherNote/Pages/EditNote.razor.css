@@ -178,8 +178,7 @@
     padding: 1rem;
     border: 1px solid var(--border-light);
     border-radius: 12px;
-    background: var(--bg-quote);
-    color: var(--text-muted);
+    color: var(--text-primary);
     font-size: 0.95rem;
     line-height: 1.6;
     overflow-y: auto;
