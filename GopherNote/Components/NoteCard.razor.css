@@ -69,6 +69,9 @@
     line-height: 1.5;
     margin: 0 0 24px 0;
     flex-grow: 1;
+    overflow-wrap: break-word;  /* Переносит длинные слова, если они не влезают */
+    word-break: break-word;
+    overflow: hidden;
 }
 
 /* Кнопка Редактировать */
