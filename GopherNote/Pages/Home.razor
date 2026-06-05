@@ -17,8 +17,11 @@
 
             <div class="filters">
                 <h3 style="text-align: center">Фильтры</h3>
-                <input type="text" placeholder="Поиск по тегам..." @bind="tagFilter" @bind:event="oninput" />
-
+                <input type="text" placeholder="Поиск по тегам..." @bind="tagFilter" @bind:event="oninput"/>
+                <input type="text" placeholder="Поиск по названию..." @bind="Title" @bind:event="oninput"/>
+            </div>
+            <div class="filters">
+                <h3 style="text-align: center">Сортировка</h3>
                 <select @bind="sortBy">
                     <option value="date_desc">Сначала новые</option>
                     <option value="date_asc">Сначала старые</option>
@@ -55,6 +58,7 @@
     private List<Note> allNotes = new();
     private string CurrentQuote = "";
     private string tagFilter = "";
+    private string Title = "";
     private string sortBy = "date_desc";
 
     private bool isEditing = false;
@@ -93,6 +97,11 @@
             {
                 filtered = filtered.Where(n => n.Tags != null &&
                                                n.Tags.Any(t => t.Contains(tagFilter, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(Title))
+            {
+                filtered = filtered.Where(n => n.Title != null && n.Title.Contains(Title, StringComparison.OrdinalIgnoreCase));
             }
 
             if (sortBy == "date_desc")

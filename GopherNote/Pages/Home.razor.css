@@ -1,4 +1,4 @@
-﻿﻿/* Основной контейнер - меняем на flex для вертикального расположения */
+﻿/* Основной контейнер - меняем на flex для вертикального расположения */
 .layout {
     display: flex;
     flex-direction: column;
@@ -47,13 +47,14 @@
 .filters select {
     width: 100%;
     padding: 0.65rem 1rem;
-    border: 1px solid var(--border-medium);
+    border: 1px solid var(--border-light);
     border-radius: 10px;
-    background-color: var(--bg-input);
+    background-color: var(--bg-sidebar);
     color: var(--text-muted);
     font-size: 0.9rem;
     transition: all 0.2s ease;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 /* Эффект при клике на фильтры */
