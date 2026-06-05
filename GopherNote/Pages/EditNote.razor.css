@@ -1,4 +1,4 @@
-﻿﻿/* Главный контейнер редактора */
+﻿/* Главный контейнер редактора */
 .editor-container {
     display: flex;
     flex-direction: column;
