@@ -67,7 +67,7 @@
 }
 
 /* Кнопка "Новая заметка" */
-.btn-black {
+.main-button {
     align-self: stretch;
     text-align: center;
     background: var(--accent);
@@ -82,11 +82,11 @@
     margin-bottom: 0.5rem;
 }
 
-.btn-black:hover {
+.main-button:hover {
     background: var(--accent-hover);
 }
 
-.btn-black:active {
+.main-button:active {
     transform: scale(0.98);
 }
 

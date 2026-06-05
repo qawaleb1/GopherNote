@@ -74,7 +74,7 @@
 }
 
 /* Главная фиолетовая кнопка */
-.btn-black {
+.main-button {
     background: var(--accent);
     color: white;
     border-radius: 8px;
@@ -86,11 +86,11 @@
     border: none;
 }
 
-.btn-black:hover {
+.main-button:hover {
     background: var(--accent-hover);
 }
 
-.btn-black:active {
+.main-button:active {
     transform: scale(0.98);
 }
 

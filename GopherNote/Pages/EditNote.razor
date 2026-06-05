@@ -17,7 +17,7 @@
                 <option value="bg-gray">Альтернативный 2</option>
             </select>
 
-            <button class="@(isRecording ? "btn-danger" : "btn-black")" @onclick="ToggleRecording">
+            <button class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording">
                 @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
             </button>
             
@@ -83,7 +83,7 @@
     </div>
 
     <div class="editor-actions">
-        <button class="btn-black" @onclick="() => OnSave.InvokeAsync(Note)">Сохранить</button>
+        <button class="main-button" @onclick="() => OnSave.InvokeAsync(Note)">Сохранить</button>
         <button class="btn-outline" @onclick="() => OnCancel.InvokeAsync()">Отмена</button>
         
         @if (!IsNewNote)
