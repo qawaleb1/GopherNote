@@ -219,3 +219,30 @@
     color: var(--voice-text);
     font-size: 0.9rem;
 }
+
+.tag-dialog {
+    border: none;
+    border-radius: 16px;
+    padding: 2rem;
+    background: var(--bg-sidebar);
+    color: var(--text-primary);
+    min-width: 300px;
+}
+.tag-dialog::backdrop {
+    background: rgba(0,0,0,0.5);
+}
+.dialog-input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    margin: 1rem 0;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    box-sizing: border-box;
+}
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
