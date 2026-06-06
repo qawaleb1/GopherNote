@@ -40,6 +40,7 @@
 
 /* Звездочка */
 .pin-icon {
+    width: 24px;
     font-size: 1.15rem;
     color: var(--pin-color);
     cursor: pointer;

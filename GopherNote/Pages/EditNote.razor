@@ -5,31 +5,41 @@
 <div class="editor-container">
     <div class="editor-header">
         <input class="title-input" @bind="Note.Title" placeholder="Заголовок заметки..." />
-        <button class="pin-icon" @onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
     </div>
 
     @* Верхняя панель: только основные инструменты *@
     <div class="editor-toolbar">
         <div class="toolbar-main-row">
-            <select @bind="Note.Color">
-                <option value="bg-white">Базовый</option>
-                <option value="bg-light-gray">Альтернативный 1</option>
-                <option value="bg-gray">Альтернативный 2</option>
-            </select>
+            <label class="btn-color">
+                <span>Выбрать цвет</span>
+                <input type="color" @bind="Note.Color" class="btn-color-inside"/>
+            </label>
 
             <button class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording">
                 @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
             </button>
-            
-            <div class="toolbar-tag-group">
-                <input type="text" 
-                       placeholder="Новый тег... (Enter)" 
-                       @bind="newTag" 
-                       @bind:event="oninput" 
-                       @onkeyup="HandleTagKeyUp" 
-                       class="toolbar-tag-input" />
-                <button class="btn-outline" style="padding: 0.5rem 1rem;" @onclick="AddTag">Добавить</button>
-            </div>
+            <button class="main-button" onclick="document.getElementById('tagDialog').showModal()">Добавить тег</button>
+            <button class="pin-icon" style="margin-left: auto"@onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
+
+            <dialog id="tagDialog" class="tag-dialog">
+                <form method="dialog">
+                    <h3 style="text-align: center">Добавить тег</h3>
+                    <input type="text"
+                           placeholder="Название тега..."
+                           class="dialog-input"
+                           @bind="newTag"
+                           @bind:event="oninput"
+                           @onkeyup="HandleTagKeyUp" />
+                    <div class="dialog-buttons">
+                        <button type="button" class="main-button" style="width: 50%;" @onclick="AddTagFromDialog">
+                            Добавить
+                        </button>
+                        <button type="button" class="btn-outline" style="width: 50%;" @onclick="CloseDialog">
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     </div>
 
@@ -71,14 +81,9 @@
                 </div>
             }
         </div>
-        
-        @{
-            var previewColorClass = "bg-white";
-            if (Note.Color == "#f5f5f5" || Note.Color == "bg-light-gray") previewColorClass = "bg-light-gray";
-            if (Note.Color == "#e0e0e0" || Note.Color == "bg-gray") previewColorClass = "bg-gray";
-        }
-        <div class="md-preview @previewColorClass" style="border: 1px solid var(--border-light); border-radius: 12px; padding: 1rem;">
-            <MarkdownView Content="@Note.Content" />
+
+        <div class="md-preview" style="background-color: @Note.Color">
+            <MarkdownView Content="@Note.Content"/>
         </div>
     </div>
 
@@ -210,5 +215,25 @@
     {
         public int Start { get; set; }
         public int End { get; set; }
+    }
+    //для dialog
+    private void AddTagFromDialog()
+    {
+        if (!string.IsNullOrWhiteSpace(newTag))
+        {
+            var cleanedTag = newTag.Trim().Replace("#", "");
+            if (!Note.Tags.Contains(cleanedTag, StringComparer.OrdinalIgnoreCase))
+            {
+                Note.Tags.Add(cleanedTag);
+            }
+            newTag = "";
+        }
+        CloseDialog();
+    }
+
+    private void CloseDialog()
+    {
+        newTag = "";
+        JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').close()");
     }
 }

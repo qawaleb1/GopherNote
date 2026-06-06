@@ -1,4 +1,4 @@
-﻿﻿/* Главный контейнер редактора */
+﻿/* Главный контейнер редактора */
 .editor-container {
     display: flex;
     flex-direction: column;
@@ -129,6 +129,28 @@
     border-color: var(--border-light);
     color: var(--text-primary);
 }
+.btn-color{
+    background: var(--accent);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background 0.2s, transform 0.1s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+.btn-color-inside{
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
 
 /* Контейнеры действий и тела */
 .editor-actions {
@@ -183,6 +205,7 @@
     line-height: 1.6;
     overflow-y: auto;
     word-wrap: break-word;
+    backdrop-color: var(--note-white) ;
 }
 
 /* Голосовой ввод */
@@ -195,4 +218,31 @@
     font-style: italic;
     color: var(--voice-text);
     font-size: 0.9rem;
+}
+
+.tag-dialog {
+    border: none;
+    border-radius: 16px;
+    padding: 2rem;
+    background: var(--bg-sidebar);
+    color: var(--text-primary);
+    min-width: 300px;
+}
+.tag-dialog::backdrop {
+    background: rgba(0,0,0,0.5);
+}
+.dialog-input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    margin: 1rem 0;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    box-sizing: border-box;
+}
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
 }
