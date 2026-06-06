@@ -5,13 +5,16 @@
 <div class="editor-container">
     <div class="editor-header">
         <input class="title-input" @bind="Note.Title" placeholder="Заголовок заметки..." />
-        <button class="pin-icon" @onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
+        <button class="pin-icon" style="float: right; min-width: 130px"@onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
     </div>
 
     @* Верхняя панель: только основные инструменты *@
     <div class="editor-toolbar">
         <div class="toolbar-main-row">
-            <input type="color" @bind="Note.Color">
+            <label class="btn-color">
+                <span>Выбрать цвет</span>
+                <input type="color" @bind="Note.Color" class="btn-color-inside"/>
+            </label>
 
             <button class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording">
                 @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
@@ -19,12 +22,12 @@
 
             <div class="toolbar-tag-group">
                 <input type="text"
-                       placeholder="Новый тег... (Enter)"
+                       placeholder="Новый тег..."
                        @bind="newTag"
                        @bind:event="oninput"
                        @onkeyup="HandleTagKeyUp"
                        class="toolbar-tag-input"/>
-                <button class="btn-outline" style="padding: 0.5rem 1rem;" @onclick="AddTag">Добавить</button>
+                <button class="main-button" style="min-width: 130px"@onclick="AddTag">Добавить</button>
             </div>
         </div>
     </div>
