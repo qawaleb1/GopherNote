@@ -46,7 +46,7 @@
                 <div class="notes-grid">
                     @foreach (var note in FilteredAndSortedNotes)
                     {
-                        <NoteCard Note="note" OnPinToggled="SaveNote" OnEdit="StartEdit" />
+                        <NoteCard Note="note" OnPinToggled="SaveNote" OnEdit="StartEdit"/>
                     }
                 </div>
             }
@@ -166,4 +166,5 @@
     {
         isEditing = false;
     }
+
 }
