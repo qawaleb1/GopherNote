@@ -11,7 +11,7 @@
     @* Верхняя панель: только основные инструменты *@
     <div class="editor-toolbar">
         <div class="toolbar-main-row">
-            <input type="text" placeholder="#ffffff" @bind="Note.Color"/>
+            <input type="color" @bind="Note.Color">
 
             <button class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording">
                 @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
@@ -68,13 +68,8 @@
             }
         </div>
 
-        @{
-            var previewColorClass = "bg-white";
-            if (Note.Color == "#f5f5f5" || Note.Color == "bg-light-gray") previewColorClass = "bg-light-gray";
-            if (Note.Color == "#e0e0e0" || Note.Color == "bg-gray") previewColorClass = "bg-gray";
-        }
-        <div class="md-preview @previewColorClass" style="border: 1px solid var(--border-light); border-radius: 12px; padding: 1rem;">
-            <MarkdownView Content="@Note.Content" />
+        <div class="md-preview" style="background-color: @Note.Color">
+            <MarkdownView Content="@Note.Content"/>
         </div>
     </div>
 

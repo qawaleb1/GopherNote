@@ -183,6 +183,7 @@
     line-height: 1.6;
     overflow-y: auto;
     word-wrap: break-word;
+    backdrop-color: var(--note-white) ;
 }
 
 /* Голосовой ввод */
