@@ -88,7 +88,7 @@
     </div>
 
     <div class="editor-actions">
-        <button class="main-button" @onclick="() => OnSave.InvokeAsync(Note)">Сохранить</button>
+        <button class="main-button" @onclick="HandleSave">Сохранить</button>
         <button class="btn-outline" @onclick="() => OnCancel.InvokeAsync()">Отмена</button>
         
         @if (!IsNewNote)
@@ -96,8 +96,25 @@
             <button class="btn-danger" @onclick="() => OnDelete.InvokeAsync(Note)">Удалить</button>
         }
     </div>
+    @if (showEmptyWarningModal)
+    {
+        <div class="custom-modal-overlay">
+            <div class="custom-modal-card">
+                <div class="custom-modal-header">
+                    <span class="warning-icon">⚠️</span>
+                    <h4>Пустая заметка</h4>
+                </div>
+                <div class="custom-modal-body">
+                    <p>Вы точно хотите создать пустую заметку?</p>
+                </div>
+                <div class="custom-modal-actions">
+                    <button class="main-button" @onclick="ConfirmSaveEmpty">Да, создать</button>
+                    <button class="btn-outline" @onclick="CancelSaveEmpty">Нет</button>
+                </div>
+            </div>
+        </div>
+    }
 </div>
-
 
 @code {
     [Parameter] public Note Note { get; set; } = new();
@@ -109,6 +126,7 @@
     private bool isRecording = false;
     private string interimText = "Говорите...";
     private string newTag = "";
+    private bool showEmptyWarningModal = false;
 
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
@@ -235,5 +253,30 @@
     {
         newTag = "";
         JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').close()");
+    }
+    
+    private async Task HandleSave()
+    {
+        bool isTitleEmpty = string.IsNullOrWhiteSpace(Note.Title);
+        bool isContentEmpty = string.IsNullOrWhiteSpace(Note.Content);
+
+        if (isTitleEmpty && isContentEmpty)
+        {
+            showEmptyWarningModal = true;
+            return;
+        }
+        
+        await OnSave.InvokeAsync(Note);
+    }
+    
+    private async Task ConfirmSaveEmpty()
+    {
+        showEmptyWarningModal = false;
+        await OnSave.InvokeAsync(Note);
+    }
+    
+    private void CancelSaveEmpty()
+    {
+        showEmptyWarningModal = false;
     }
 }
