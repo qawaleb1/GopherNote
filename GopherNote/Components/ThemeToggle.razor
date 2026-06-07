@@ -14,22 +14,37 @@
 </button>
 
 @code {
-    private bool isDark = false;
+    private bool isDark = true;  // Меняем с false на true
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
-            if (savedTheme == "dark")
+            if (string.IsNullOrEmpty(savedTheme))
+            {
+                // Новый пользователь - сразу тёмная тема
+                isDark = true;
+                await SetTheme(true);
+                await JS.InvokeVoidAsync("localStorage.setItem", "theme", "dark");
+            }
+            else if (savedTheme == "dark")
             {
                 isDark = true;
                 await SetTheme(true);
+            }
+            else
+            {
+                isDark = false;
+                await SetTheme(false);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading theme: {ex.Message}");
+            // При ошибке тоже ставим тёмную тему
+            isDark = true;
+            await SetTheme(true);
         }
     }
 

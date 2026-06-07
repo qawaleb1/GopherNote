@@ -313,3 +313,479 @@
     gap: 10px;
     justify-content: flex-end;
 }
+.template-picker-group {
+    position: relative;
+    display: inline-block;
+}
+
+.template-button {
+    background: var(--bg-button);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.template-button:hover {
+    background: var(--bg-button-hover);
+    transform: translateY(-1px);
+}
+
+.template-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+}
+
+.template-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    min-width: 80px;
+}
+
+.template-option:hover {
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+}
+
+.template-option.selected {
+    background: var(--bg-selected);
+    border: 2px solid var(--accent-color);
+}
+
+.template-preview {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+/* Цвета для превью */
+.template-1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.template-2 {
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+}
+/* Шаблон 3 - Акцент (спокойный тёмно-синий) */
+.template-3 {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2a4f6e 100%);
+}
+
+/* Шаблон 4 - Элегантный (спокойный тёмно-зелёный) */
+.template-4 {
+    background: linear-gradient(135deg, #1a4a4a 0%, #2d5f5f 100%);
+}
+/* Базовые стили карточки */
+.note-card {
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 24px;
+    max-width: 360px;
+    height: 320px;
+    max-height: 320px;
+    box-shadow: var(--shadow-card);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* ЗАМЕТКА СО ЗВЕЗДОЙ: получает фиолетовую рамку */
+.note-card.pinned-style {
+    border-color: var(--accent);
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1);
+}
+
+/* Стили заголовка */
+.note-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.note-header h4 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+/* Звездочка */
+.pin-icon {
+    width: 24px;
+    font-size: 1.15rem;
+    color: var(--pin-color);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.pin-icon:hover {
+    color: var(--pin-hover);
+    transform: scale(1.1);
+}
+
+/* Текст превью */
+.note-preview {
+    font-size: 0.95rem;
+    color: var(--text-preview);
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    overflow: hidden;
+
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Стили для контейнера тегов на карточке */
+.note-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+/* Внешний вид самих тегов */
+.tag {
+    background-color: var(--bg-input, #f0f0f0);
+    color: var(--text-primary, #333);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    border: 1px solid var(--border-light, #ccc);
+    word-break: break-all;
+}
+
+/* Футер и кнопка */
+.note-footer {
+    width: 100%;
+}
+
+.btn-edit {
+    width: 100%;
+    text-align: center;
+    background: var(--accent);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-edit:hover {
+    background: var(--accent-hover);
+}
+
+/* Контейнер кнопки "+ еще X" */
+.tag-more {
+    position: relative;
+    cursor: pointer;
+}
+
+.tag-more .tooltip-grid {
+    position: absolute;
+
+    /* Прижимаем к правому нижнему углу кнопки '+ 67' */
+    bottom: 100%;                 /* Растет строго ВВЕРХ */
+    right: 0;                     /* Растет строго ВЛЕВО */
+
+    /* Небольшое смещение для красивой анимации */
+    transform: translateY(8px) scale(0.95);
+    transform-origin: bottom right; /* Точка анимации из правого нижнего угла */
+
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5);
+
+    /* Сетка-таблица */
+    display: grid;
+    grid-template-columns: repeat(3, minmax(60px, auto));
+    gap: 6px;
+    width: max-content;
+
+    /* Ограничение высоты и скролл */
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 999;
+}
+
+/* Красивое оформление скроллбара внутри таблички тегов */
+.tag-more .tooltip-grid::-webkit-scrollbar {
+    width: 6px;                   /* Ширина полосы прокрутки */
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-track {
+    background: #1f2937;          /* Фон дорожки скролла */
+    border-radius: 8px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-thumb {
+    background: #4b5563;          /* Цвет самого ползунка */
+    border-radius: 8px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;          /* Цвет ползунка при наведении */
+}
+
+
+
+/* Стили для мини-тегов внутри таблички */
+.tooltip-tag {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;          /* Чтобы тег не переносился внутри ячейки */
+    text-align: center;
+}
+
+/* Показываем табличку при наведении */
+.tag-more:hover .tooltip-grid {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+/* ========== ШАБЛОНЫ КАРТОЧЕК ========== */
+
+/* Шаблон 1 - Классический градиент (фиолетовый) */
+.note-card.note-template-1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.note-card.note-template-1 .note-header h4 {
+    color: white;
+}
+
+.note-card.note-template-1 .note-preview {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.note-card.note-template-1 .tag {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.note-card.note-template-1 .pin-icon {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.note-card.note-template-1 .pin-icon:hover {
+    color: white;
+}
+
+/* Шаблон 2 - Минимализм (адаптивный под тему) */
+.note-card.note-template-2 {
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    color: var(--text-primary);
+    box-shadow: none;
+}
+
+.note-card.note-template-2:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.note-card.note-template-2 .note-header h4 {
+    color: var(--text-primary);
+}
+
+.note-card.note-template-2 .note-preview {
+    color: var(--text-preview);
+}
+
+.note-card.note-template-2 .tag {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+.note-card.note-template-2 .btn-edit {
+    background: var(--accent);
+}
+
+.note-card.note-template-2 .btn-edit:hover {
+    background: var(--accent-hover);
+}
+
+/* Шаблон 3 - Акцент (спокойный тёмно-синий) */
+.note-card.note-template-3 {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2a4f6e 100%);
+    color: #e8f0fe;
+}
+
+.note-card.note-template-3 .note-header h4 {
+    color: #e8f0fe;
+}
+
+.note-card.note-template-3 .note-preview {
+    color: #c5d5ea;
+}
+
+.note-card.note-template-3 .tag {
+    background-color: rgba(30, 58, 95, 0.6);
+    color: #e8f0fe;
+    border-color: rgba(72, 120, 184, 0.5);
+}
+
+.note-card.note-template-3 .pin-icon {
+    color: rgba(232, 240, 254, 0.8);
+}
+
+.note-card.note-template-3 .pin-icon:hover {
+    color: white;
+}
+
+.note-card.note-template-3 .btn-edit {
+    background: rgba(72, 120, 184, 0.8);
+    color: #e8f0fe;
+}
+
+.note-card.note-template-3 .btn-edit:hover {
+    background: rgba(72, 120, 184, 1);
+}
+
+/* Шаблон 4 - Элегантный (спокойный тёмно-зелёный/бирюзовый) */
+.note-card.note-template-4 {
+    background: linear-gradient(135deg, #1a4a4a 0%, #2d5f5f 100%);
+    color: #e0f0f0;
+}
+
+.note-card.note-template-4 .note-header h4 {
+    color: #e0f0f0;
+}
+
+.note-card.note-template-4 .note-preview {
+    color: #b8dbdb;
+}
+
+.note-card.note-template-4 .tag {
+    background-color: rgba(26, 74, 74, 0.6);
+    color: #e0f0f0;
+    border-color: rgba(64, 128, 128, 0.5);
+}
+
+.note-card.note-template-4 .pin-icon {
+    color: rgba(224, 240, 240, 0.8);
+}
+
+.note-card.note-template-4 .pin-icon:hover {
+    color: white;
+}
+
+.note-card.note-template-4 .btn-edit {
+    background: rgba(64, 128, 128, 0.8);
+    color: #e0f0f0;
+}
+
+.note-card.note-template-4 .btn-edit:hover {
+    background: rgba(64, 128, 128, 1);
+}
+
+
+/* Специальные стили для закрепленных заметок с шаблонами */
+.note-card.note-template-1.pinned-style,
+.note-card.note-template-3.pinned-style,
+.note-card.note-template-4.pinned-style {
+    border-color: gold;
+    box-shadow: 0 10px 25px -5px rgba(255, 215, 0, 0.3);
+}
+
+.note-card.note-template-2.pinned-style {
+    border-color: gold;
+    box-shadow: 0 10px 25px -5px rgba(255, 215, 0, 0.2);
+}
+
+/* Тёмная тема для Минимализма - используем переменные */
+.dark-theme .note-card.note-template-2 {
+    background: var(--bg-card);  /* Это будет #1f2937 (тёмно-серый) */
+    border-color: var(--border-light);
+}
+
+.dark-theme .note-card.note-template-2 .tag {
+    background-color: var(--bg-input);
+    border-color: var(--border-light);
+}
+
+.dark-theme .note-card.note-template-2 .btn-edit {
+    background: var(--accent);
+}
+
+.dark-theme .note-card.note-template-2 .btn-edit:hover {
+    background: var(--accent-hover);
+}
+
+/* Анимация при смене шаблона */
+.note-card {
+    transition: all 0.3s ease-in-out;
+}
+
+
+
+.template-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Для темной темы */
+.dark-theme .template-2 {
+    background: #2d2d2d;
+}
+
+@media (max-width: 768px) {
+    .template-dropdown {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        flex-direction: column;
+        width: 90%;
+        max-width: 280px;
+    }
+}

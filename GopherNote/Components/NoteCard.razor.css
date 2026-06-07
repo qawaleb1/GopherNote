@@ -41,17 +41,18 @@
     flex: 1;
 }
 
-/* Звездочка */
+
+/* Звездочка - общая для всех шаблонов */
 .pin-icon {
     width: 24px;
     font-size: 1.15rem;
-    color: var(--pin-color);
+    color: #ffffff;  /* Белый цвет */
     cursor: pointer;
     transition: transform 0.2s;
 }
 
 .pin-icon:hover {
-    color: var(--pin-hover);
+    color: #f0f0f0;  /* Светло-серый при наведении */
     transform: scale(1.1);
 }
 
@@ -189,6 +190,164 @@
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0) scale(1);
+}
+/* ========== ШАБЛОНЫ КАРТОЧЕК ========== */
+
+/* Шаблон 1 - Классический градиент (фиолетовый) */
+.note-card.note-template-1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.note-card.note-template-1 .note-header h4 {
+    color: white;
+}
+
+.note-card.note-template-1 .note-preview {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.note-card.note-template-1 .tag {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+
+
+/* Шаблон 2 - Минимализм (адаптивный под тему) */
+.note-card.note-template-2 {
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    color: var(--text-primary);
+    box-shadow: none;
+}
+
+.note-card.note-template-2:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.note-card.note-template-2 .note-header h4 {
+    color: var(--text-primary);
+}
+
+.note-card.note-template-2 .note-preview {
+    color: var(--text-preview);
+}
+
+.note-card.note-template-2 .tag {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+.note-card.note-template-2 .btn-edit {
+    background: var(--accent);
+}
+
+.note-card.note-template-2 .btn-edit:hover {
+    background: var(--accent-hover);
+}
+
+/* Шаблон 3 - Акцент (спокойный тёмно-синий) */
+.note-card.note-template-3 {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2a4f6e 100%);
+    color: #e8f0fe;
+}
+
+.note-card.note-template-3 .note-header h4 {
+    color: #e8f0fe;
+}
+
+.note-card.note-template-3 .note-preview {
+    color: #c5d5ea;
+}
+
+.note-card.note-template-3 .tag {
+    background-color: rgba(30, 58, 95, 0.6);
+    color: #e8f0fe;
+    border-color: rgba(72, 120, 184, 0.5);
+}
+
+
+
+.note-card.note-template-3 .btn-edit {
+    background: rgba(72, 120, 184, 0.8);
+    color: #e8f0fe;
+}
+
+.note-card.note-template-3 .btn-edit:hover {
+    background: rgba(72, 120, 184, 1);
+}
+
+/* Шаблон 4 - Элегантный (спокойный тёмно-зелёный/бирюзовый) */
+.note-card.note-template-4 {
+    background: linear-gradient(135deg, #1a4a4a 0%, #2d5f5f 100%);
+    color: #e0f0f0;
+}
+
+.note-card.note-template-4 .note-header h4 {
+    color: #e0f0f0;
+}
+
+.note-card.note-template-4 .note-preview {
+    color: #b8dbdb;
+}
+
+.note-card.note-template-4 .tag {
+    background-color: rgba(26, 74, 74, 0.6);
+    color: #e0f0f0;
+    border-color: rgba(64, 128, 128, 0.5);
+}
+
+
+
+.note-card.note-template-4 .btn-edit {
+    background: rgba(64, 128, 128, 0.8);
+    color: #e0f0f0;
+}
+
+.note-card.note-template-4 .btn-edit:hover {
+    background: rgba(64, 128, 128, 1);
+}
+
+
+/* ========== ЗАКРЕПЛЕННЫЕ ЗАМЕТКИ ========== */
+/* Единый стиль для всех шаблонов */
+.note-card.pinned-style {
+    position: relative;
+}
+
+.note-card.note-template-1.pinned-style,
+.note-card.note-template-2.pinned-style,
+.note-card.note-template-3.pinned-style,
+.note-card.note-template-4.pinned-style {
+    border: 2px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Адаптация для тёмной темы - Минимализм */
+.dark-theme .note-card.note-template-2 {
+    background: var(--bg-card);
+    border-color: var(--border-light);
+}
+
+.dark-theme .note-card.note-template-2 .tag {
+    background-color: var(--bg-input);
+    border-color: var(--border-light);
+}
+
+.dark-theme .note-card.note-template-2 .btn-edit {
+    background: var(--accent);
+}
+
+.dark-theme .note-card.note-template-2 .btn-edit:hover {
+    background: var(--accent-hover);
+}
+/* Анимация при смене шаблона */
+.note-card {
+    transition: all 0.3s ease-in-out;
 }
 
 

@@ -1,5 +1,6 @@
 ﻿@inject SpeechService SpeechService
 @inject IJSRuntime JS
+@inject NoteService NoteService
 @implements IDisposable
 
 <div class="editor-container">
@@ -7,34 +8,37 @@
         <input class="title-input" @bind="Note.Title" placeholder="Заголовок заметки..." />
     </div>
 
-    @* Верхняя панель: инструменты с одинаковым расстоянием и кнопками сброса *@
+    @* Верхняя панель: инструменты *@
     <div class="editor-toolbar">
         <div class="toolbar-main-row">            
-            <div class="color-picker-group">
-                <label class="btn-color">
-                    <span>Цвет фона</span>
-                    <input type="color" 
-                           value="@(string.IsNullOrEmpty(Note.Color) || Note.Color == "#00000000" ? "#ffffff" : Note.Color)" 
-                           @onchange="@((ChangeEventArgs e) => Note.Color = e.Value?.ToString() ?? "#ffffff")" 
-                           class="btn-color-inside"/>
-                </label>
-                @if (!string.IsNullOrEmpty(Note.Color) && Note.Color != "#ffffff" && Note.Color != "#00000000")
+            <div class="template-picker-group">
+                <button type="button" class="main-button template-button" @onclick="ToggleTemplateMenu">
+                    🎨 Шаблоны: <strong>@GetTemplateName()</strong>
+                </button>
+                
+                @if (showTemplateMenu)
                 {
-                    <button type="button" class="btn-reset-color" @onclick='() => Note.Color = "#ffffff"' title="Сбросить цвет фона">✕</button>
-                }
-            </div>
-
-            <div class="color-picker-group">
-                <label class="btn-color">
-                    <span>Цвет текста</span>
-                    <input type="color" 
-                           value="@(Note.TextColor == "#00000000" ? "#000000" : Note.TextColor)" 
-                           @onchange="@((ChangeEventArgs e) => Note.TextColor = e.Value?.ToString() ?? "#000000")" 
-                           class="btn-color-inside"/>
-                </label>
-                @if (Note.TextColor != "#00000000")
-                {
-                    <button type="button" class="btn-reset-color" @onclick='() => Note.TextColor = "#00000000"' title="Вернуть авто-контраст текста">✕</button>
+                    <div class="template-dropdown">
+                        <div class="template-option @(GetCurrentTemplate() == 1 ? "selected" : "")" @onclick="() => SelectTemplate(1)">
+                            <div class="template-preview template-1"></div>
+                            <span class="template-name">Классический</span>
+                        </div>
+                        
+                        <div class="template-option @(GetCurrentTemplate() == 2 ? "selected" : "")" @onclick="() => SelectTemplate(2)">
+                            <div class="template-preview template-2"></div>
+                            <span class="template-name">Минимализм</span>
+                        </div>
+                        
+                        <div class="template-option @(GetCurrentTemplate() == 3 ? "selected" : "")" @onclick="() => SelectTemplate(3)">
+                            <div class="template-preview template-3"></div>
+                            <span class="template-name">Акцент</span>
+                        </div>
+                        
+                        <div class="template-option @(GetCurrentTemplate() == 4 ? "selected" : "")" @onclick="() => SelectTemplate(4)">
+                            <div class="template-preview template-4"></div>
+                            <span class="template-name">Элегантный</span>
+                        </div>
+                    </div>
                 }
             </div>
 
@@ -107,12 +111,11 @@
             }
         </div>
 
-        <div class="md-preview" style="background-color: @Note.Color; color: @ResolveTextColor()">
+        <div class="md-preview @Note.TemplateClass">
             <MarkdownView Content="@Note.Content"/>
         </div>
     </div>
 
-    @* Индикация ошибок сети / сохранения *@
     @if (!string.IsNullOrEmpty(errorMessage))
     {
         <div class="error-toast" style="background-color: var(--error, #ef4444); color: white; padding: 12px 16px; border-radius: 8px; font-size: 0.95rem; font-weight: 500; margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
@@ -166,6 +169,9 @@
     
     private string? errorMessage = null;
     private bool isSaving = false;
+    
+    // Переменные для шаблонов
+    private bool showTemplateMenu = false;
 
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
@@ -175,9 +181,27 @@
     protected override void OnInitialized()
     {
         if (Note.Tags == null) Note.Tags = new List<string>();
+    
+        // Устанавливаем шаблон по умолчанию, если его нет
+        if (string.IsNullOrEmpty(Note.TemplateClass))
+        {
+            Note.TemplateClass = "note-template-2";  // Меняем с 1 на 2
+        }
+    
+        Console.WriteLine($"=== OnInitialized: TemplateClass = {Note.TemplateClass}, Title = {Note.Title} ===");
 
         SpeechService.OnRecognized += HandleSpeechRecognized;
         SpeechService.OnEnded += HandleSpeechEnded;
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Дополнительная проверка при каждом обновлении параметров
+        if (string.IsNullOrEmpty(Note.TemplateClass))
+        {
+            Note.TemplateClass = "note-template-1";
+        }
+        Console.WriteLine($"=== OnParametersSet: TemplateClass = {Note.TemplateClass} ===");
     }
 
     private void AddTag()
@@ -299,7 +323,6 @@
         JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').close()");
     }
     
-    // БЕЗОПАСНОЕ СОХРАНЕНИЕ С TRY-CATCH СЕТИ
     private async Task HandleSave()
     {
         bool isTitleEmpty = string.IsNullOrWhiteSpace(Note.Title);
@@ -326,7 +349,9 @@
         isSaving = true;
         try
         {
+            Console.WriteLine($"=== ПЕРЕД СОХРАНЕНИЕМ: TemplateClass = {Note.TemplateClass} ===");
             await OnSave.InvokeAsync(Note);
+            Console.WriteLine($"=== ПОСЛЕ СОХРАНЕНИЯ: TemplateClass = {Note.TemplateClass} ===");
         }
         catch (Exception ex)
         {
@@ -388,4 +413,54 @@
 
         return Note.TextColor;
     }
-}
+    
+    // Методы для работы с шаблонами
+    private void ToggleTemplateMenu()
+    {
+        showTemplateMenu = !showTemplateMenu;
+    }
+    
+    private int GetCurrentTemplate()
+    {
+        if (string.IsNullOrEmpty(Note.TemplateClass))
+            return 2;  // Меняем с 1 на 2 (Минимализм)
+    
+        switch (Note.TemplateClass)
+        {
+            case "note-template-1": return 1;
+            case "note-template-2": return 2;
+            case "note-template-3": return 3;
+            case "note-template-4": return 4;
+            default: return 2;  // Меняем с 1 на 2
+        }
+    }
+    private string GetTemplateName()
+    {
+        switch (GetCurrentTemplate())
+        {
+            case 1: return "Классический";
+            case 2: return "Минимализм";
+            case 3: return "Акцент";
+            case 4: return "Элегантный";
+            default: return "Минимализм";  // Меняем с "Классический"
+        }
+    }
+    
+    private void SelectTemplate(int templateId)
+    {
+        string newTemplate = templateId switch
+        {
+            1 => "note-template-1",
+            2 => "note-template-2",
+            3 => "note-template-3",
+            4 => "note-template-4",
+            _ => "note-template-1"
+        };
+        
+        Note.TemplateClass = newTemplate;
+        showTemplateMenu = false;
+        StateHasChanged();
+        
+        Console.WriteLine($"=== ВЫБРАН ШАБЛОН: {templateId} -> {Note.TemplateClass} ===");
+    }
+}   
