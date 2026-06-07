@@ -101,3 +101,104 @@
 .content {
     min-width: 0; /* Предотвращает переполнение */
 }
+
+.github-team {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+    border: 1px solid var(--border-light);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.github-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+    text-align: center;
+}
+
+.github-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    background: var(--bg-input);
+}
+
+.github-link:hover {
+    background: var(--accent-light);
+    transform: translateX(4px);
+}
+
+.role-icon {
+    font-size: 1rem;
+    width: 24px;
+    text-align: center;
+}
+
+.role-icon.techlead {
+    color: #f59e0b;
+}
+
+.role-icon.dev {
+    color: #3b82f6;
+}
+
+.role-icon.qa {
+    color: #ef4444;
+}
+
+.role-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.role-badge.techlead {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.role-badge.dev {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.role-badge.qa {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.github-link span:nth-child(2) {
+    flex: 1;
+    font-weight: 500;
+}
+
+.github-icon {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.github-link:hover .github-icon {
+    opacity: 1;
+}
