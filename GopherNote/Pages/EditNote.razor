@@ -10,12 +10,12 @@
 
     @* Верхняя панель: инструменты *@
     <div class="editor-toolbar">
-        <div class="toolbar-main-row">            
+        <div class="toolbar-main-row">
             <div class="template-picker-group">
                 <button type="button" class="main-button template-button" @onclick="ToggleTemplateMenu">
                     🎨 Шаблоны: <strong>@GetTemplateName()</strong>
                 </button>
-                
+
                 @if (showTemplateMenu)
                 {
                     <div class="template-dropdown">
@@ -23,17 +23,17 @@
                             <div class="template-preview template-1"></div>
                             <span class="template-name">Классический</span>
                         </div>
-                        
+
                         <div class="template-option @(GetCurrentTemplate() == 2 ? "selected" : "")" @onclick="() => SelectTemplate(2)">
                             <div class="template-preview template-2"></div>
                             <span class="template-name">Минимализм</span>
                         </div>
-                        
+
                         <div class="template-option @(GetCurrentTemplate() == 3 ? "selected" : "")" @onclick="() => SelectTemplate(3)">
                             <div class="template-preview template-3"></div>
                             <span class="template-name">Акцент</span>
                         </div>
-                        
+
                         <div class="template-option @(GetCurrentTemplate() == 4 ? "selected" : "")" @onclick="() => SelectTemplate(4)">
                             <div class="template-preview template-4"></div>
                             <span class="template-name">Элегантный</span>
@@ -45,9 +45,9 @@
             <button type="button" class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording" disabled="@isSaving">
                 @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
             </button>
-            
+
             <button type="button" class="main-button" @onclick="OpenTagDialog" disabled="@isSaving">Добавить тег</button>
-            
+
             <button type="button" class="pin-icon" style="margin-left: auto" @onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
 
             <dialog id="tagDialog" class="tag-dialog">
@@ -90,9 +90,9 @@
         <button type="button" class="btn-outline btn-md-format" style="font-style: italic;" @onclick='() => WrapSelection("*", "*")' title="Курсив">I</button>
         <button type="button" class="btn-outline btn-md-format" style="text-decoration: line-through;" @onclick='() => WrapSelection("~~", "~~")' title="Зачеркнутый">S</button>
         <button type="button" class="btn-outline btn-md-format" style="font-family: monospace;" @onclick='() => WrapSelection("`", "`")' title="Код">&lt;/&gt;</button>
-        
+
         <span class="toolbar-divider">|</span>
-        
+
         <button type="button" class="btn-outline btn-md-format" @onclick='() => WrapSelection("# ", "")' title="Заголовок H1">H1</button>
         <button type="button" class="btn-outline btn-md-format" @onclick='() => WrapSelection("## ", "")' title="Заголовок H2">H2</button>
     </div>
@@ -100,7 +100,7 @@
     <div class="editor-body">
         <div class="textarea-wrapper">
             <textarea id="md-editor-textarea" class="md-editor" @bind="Note.Content" @bind:event="oninput" placeholder="Пишите здесь..."></textarea>
-            
+
             @if (isRecording)
             {
                 <div class="voice-interim">
@@ -203,16 +203,16 @@
     [Parameter] public EventCallback<Note> OnSave { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public bool IsNewNote { get; set; } = false;
-    [Parameter] public EventCallback<Note> OnDelete { get; set; } 
-    
+    [Parameter] public EventCallback<Note> OnDelete { get; set; }
+
     private bool isRecording = false;
     private string interimText = "Говорите...";
     private string newTag = "";
     private bool showEmptyWarningModal = false;
-    
+
     private string? errorMessage = null;
     private bool isSaving = false;
-    
+
     // Переменные для шаблонов
     private bool showTemplateMenu = false;
 
@@ -227,13 +227,13 @@
     protected override void OnInitialized()
     {
         if (Note.Tags == null) Note.Tags = new List<string>();
-    
+
         // Устанавливаем шаблон по умолчанию, если его нет
         if (string.IsNullOrEmpty(Note.TemplateClass))
         {
             Note.TemplateClass = "note-template-2";  // Меняем с 1 на 2
         }
-    
+
         Console.WriteLine($"=== OnInitialized: TemplateClass = {Note.TemplateClass}, Title = {Note.Title} ===");
 
         SpeechService.OnRecognized += HandleSpeechRecognized;
@@ -303,7 +303,7 @@
         SpeechService.OnRecognized -= HandleSpeechRecognized;
         SpeechService.OnEnded -= HandleSpeechEnded;
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -319,14 +319,14 @@
         try
         {
             var selection = await JS.InvokeAsync<TextareaSelection>("getTextareaSelection", "md-editor-textarea");
-            
+
             var content = Note.Content ?? "";
             var start = selection.Start;
             var end = selection.End;
 
             var selectedText = content.Substring(start, end - start);
             var newText = content.Substring(0, start) + prefix + selectedText + suffix + content.Substring(end);
-            
+
             Note.Content = newText;
             StateHasChanged();
 
@@ -377,7 +377,7 @@
         }
     }
 
-    
+
     private async Task HandleSave()
     {
         bool isTitleEmpty = string.IsNullOrWhiteSpace(Note.Title);
@@ -388,10 +388,10 @@
             showEmptyWarningModal = true;
             return;
         }
-        
+
         await ExecuteSaveAsync();
     }
-    
+
     private async Task ConfirmSaveEmpty()
     {
         showEmptyWarningModal = false;
@@ -437,12 +437,12 @@
             isSaving = false;
         }
     }
-    
+
     private void CancelSaveEmpty()
     {
         showEmptyWarningModal = false;
     }
-    
+
     private string ResolveTextColor()
     {
         if (string.IsNullOrEmpty(Note.TextColor) || Note.TextColor == "#00000000")
@@ -468,18 +468,18 @@
 
         return Note.TextColor;
     }
-    
+
     // Методы для работы с шаблонами
     private void ToggleTemplateMenu()
     {
         showTemplateMenu = !showTemplateMenu;
     }
-    
+
     private int GetCurrentTemplate()
     {
         if (string.IsNullOrEmpty(Note.TemplateClass))
             return 2;  // Меняем с 1 на 2 (Минимализм)
-    
+
         switch (Note.TemplateClass)
         {
             case "note-template-1": return 1;
@@ -500,7 +500,7 @@
             default: return "Минимализм";  // Меняем с "Классический"
         }
     }
-    
+
     private void SelectTemplate(int templateId)
     {
         string newTemplate = templateId switch
@@ -511,11 +511,11 @@
             4 => "note-template-4",
             _ => "note-template-1"
         };
-        
+
         Note.TemplateClass = newTemplate;
         showTemplateMenu = false;
         StateHasChanged();
-        
+
         Console.WriteLine($"=== ВЫБРАН ШАБЛОН: {templateId} -> {Note.TemplateClass} ===");
     }
      // Предупреждение об удалении
@@ -556,4 +556,3 @@
          await OnCancel.InvokeAsync();
      }
 }
-

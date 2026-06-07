@@ -1,8 +1,10 @@
 ﻿@page "/"
 @using GopherNote.Models
 @using GopherNote.Services
+@using Microsoft.JSInterop
 @inject NoteService NoteService
 @inject QuoteService QuoteService
+@inject IJSRuntime JS
 
 <PageTitle>GopherNote</PageTitle>
 
@@ -22,10 +24,20 @@
             </div>
             <div class="filters">
                 <h3 style="text-align: center">Сортировка</h3>
-                <select @bind="sortBy">
-                    <option value="date_desc">Сначала новые</option>
-                    <option value="date_asc">Сначала старые</option>
-                </select>
+                <!-- Кастомный select -->
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" @onclick="ToggleSelect">
+                        @(sortBy == "date_desc" ? "Сначала новые" : "Сначала старые")
+                    </div>
+                    <div class="custom-select-list @(showSelect ? "show" : "")">
+                        <div class="custom-select-option @(sortBy == "date_desc" ? "selected" : "")" @onclick="SelectDateDesc">
+                            Сначала новые
+                        </div>
+                        <div class="custom-select-option @(sortBy == "date_asc" ? "selected" : "")" @onclick="SelectDateAsc">
+                            Сначала старые
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="github-team">
                 <div class="github-header">
@@ -67,16 +79,17 @@
                         <span class="role-badge qa">QA инженер</span>
                         <span class="github-icon">→</span>
                     </a>
-                </div></div>
+                </div>
+            </div>
         </aside>
 
         <main class="content">
             @if (isEditing)
             {
-                <EditNote Note="currentEditingNote" 
+                <EditNote Note="currentEditingNote"
                           IsNewNote="@(!allNotes.Any(n => n.Id == currentEditingNote.Id))"
-                          OnSave="SaveNote" 
-                          OnCancel="CancelEdit" 
+                          OnSave="SaveNote"
+                          OnCancel="CancelEdit"
                           OnDelete="DeleteNote" />
             }
             else
@@ -92,6 +105,88 @@
     </div>
 </div>
 
+<style>
+    /* ========== СТИЛИ ДЛЯ КАСТОМНОГО SELECT ========== */
+    .custom-select-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .custom-select {
+        width: 100%;
+        padding: 8px 32px 8px 12px;
+        background-color: var(--bg-input);
+        color: var(--text-primary);
+        border: 1px solid var(--border-medium);
+        border-radius: 8px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 0.85rem;
+        font-weight: 400;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+    }
+
+    .custom-select:hover {
+        background-color: var(--bg-hover);
+        border-color: var(--accent);
+    }
+
+    .custom-select-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: 4px;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-medium);
+        border-radius: 8px;
+        box-shadow: var(--shadow-dropdown);
+        z-index: 1000;
+        display: none;
+        overflow: hidden;
+    }
+
+    .custom-select-list.show {
+        display: block;
+    }
+
+    .custom-select-option {
+        padding: 10px 12px;
+        cursor: pointer;
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+    .custom-select-option:hover {
+        background-color: var(--accent-light);
+        color: var(--accent);
+    }
+
+    .custom-select-option.selected {
+        background-color: var(--accent);
+        color: white;
+    }
+
+    /* Тёмная тема для селекта */
+    .dark-theme .custom-select {
+        background-color: var(--bg-input);
+    }
+
+    .dark-theme .custom-select-list {
+        background-color: var(--bg-card);
+        border-color: var(--border-medium);
+    }
+</style>
+
 @code {
     private List<Note> allNotes = new();
     private string CurrentQuote = "";
@@ -102,6 +197,8 @@
     private bool isEditing = false;
     private Note currentEditingNote = new();
 
+    private bool showSelect = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -110,6 +207,9 @@
             {
                 await LoadData();
                 StateHasChanged();
+
+                // Инициализация для закрытия селекта при клике вне
+                await JS.InvokeVoidAsync("setupClickOutside", DotNetObjectReference.Create(this));
             }
             catch (Exception ex)
             {
@@ -155,9 +255,9 @@
 
     private void CreateNewNote()
     {
-        currentEditingNote = new Note 
-        { 
-            TemplateClass = "note-template-2"  // Меняем с 1 на 2
+        currentEditingNote = new Note
+        {
+            TemplateClass = "note-template-2"
         };
         isEditing = true;
     }
@@ -175,7 +275,7 @@
             Tags = note.Tags != null ? new List<string>(note.Tags) : new List<string>(),
             CreatedAt = note.CreatedAt,
             UpdatedAt = note.UpdatedAt,
-            TemplateClass = note.TemplateClass  
+            TemplateClass = note.TemplateClass
         };
         isEditing = true;
     }
@@ -187,7 +287,6 @@
         var index = allNotes.FindIndex(n => n.Id == note.Id);
         if (index != -1)
         {
-            // Обновляем существующую заметку, включая TemplateClass
             allNotes[index] = note;
         }
         else
@@ -205,7 +304,6 @@
         await NoteService.DeleteNoteAsync(note.Id);
         isEditing = false;
         await LoadData();
-        await LoadData();
     }
 
     private void CancelEdit()
@@ -213,4 +311,36 @@
         isEditing = false;
     }
 
+    private void ToggleSelect()
+    {
+        showSelect = !showSelect;
+    }
+
+    private void SelectOption(string value)
+    {
+        sortBy = value;
+        showSelect = false;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void CloseSelect()
+    {
+        showSelect = false;
+        StateHasChanged();
+    }
+
+    private void SelectDateDesc()
+    {
+        sortBy = "date_desc";
+        showSelect = false;
+        StateHasChanged();
+    }
+
+    private void SelectDateAsc()
+    {
+        sortBy = "date_asc";
+        showSelect = false;
+        StateHasChanged();
+    }
 }

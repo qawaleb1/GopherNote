@@ -784,21 +784,8 @@
 .dark-theme .template-2 {
     background: #2d2d2d;
 }
-
-@media (max-width: 768px) {
-    .template-dropdown {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        flex-direction: column;
-        width: 90%;
-        max-width: 280px;
-
-        .btn-modals-group {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-    }
+.btn-modals-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
