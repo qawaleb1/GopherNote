@@ -6,6 +6,7 @@
     background-color: var(--bg-page);
     padding: 20px;
     min-height: 100vh;
+    height: auto;
 }
 
 /* Контейнер для сайдбара и контента */
@@ -333,3 +334,10 @@
     background-color: var(--accent);
     color: white;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
