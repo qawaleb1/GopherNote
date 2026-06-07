@@ -518,42 +518,43 @@
         
         Console.WriteLine($"=== ВЫБРАН ШАБЛОН: {templateId} -> {Note.TemplateClass} ===");
     }
-}   
-    // Предупреждение об удалении
-    private void ShowDeleteWarning()
-    {
-        showDeleteWarningModal = true;
-        StateHasChanged();
-    }
+     // Предупреждение об удалении
+     private void ShowDeleteWarning()
+     {
+         showDeleteWarningModal = true;
+         StateHasChanged();
+     }
 
-    private void CancelDeleteWarning()
-    {
-        showDeleteWarningModal = false;
-        StateHasChanged();
-    }
+     private void CancelDeleteWarning()
+     {
+         showDeleteWarningModal = false;
+         StateHasChanged();
+     }
 
-    private async Task ConfirmDelete()
-    {
-        showDeleteWarningModal = false;
-        await ExecuteDeleteAsync();
-    }
+     private async Task ConfirmDelete()
+     {
+         showDeleteWarningModal = false;
+         await ExecuteDeleteAsync();
+     }
 
 // Предупреждение об отмене
-    private void ShowCancelWarning()
-    {
-        showCancelWarningModal = true;
-        StateHasChanged();
-    }
+     private void ShowCancelWarning()
+     {
+         showCancelWarningModal = true;
+         StateHasChanged();
+     }
 
-    private void CancelCancelWarning()
-    {
-        showCancelWarningModal = false;
-        StateHasChanged();
-    }
+     private void CancelCancelWarning()
+     {
+         showCancelWarningModal = false;
+         StateHasChanged();
+     }
 
-    private async Task ConfirmCancel()
-    {
-        showCancelWarningModal = false;
-        await OnCancel.InvokeAsync();
-    }
+     private async Task ConfirmCancel()
+     {
+         showCancelWarningModal = false;
+         await OnCancel.InvokeAsync();
+     }
 }
+}   
+
