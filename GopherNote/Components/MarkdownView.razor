@@ -1,11 +1,19 @@
 ﻿@* Этот компонент берет сырой текст с Markdown-разметкой, прогоняет его через
-библиотеку Markdig и выводит на экран уже отформатированный HTML *@
+библиотеку Markdig с отключенной поддержкой сырого HTML и выводит отформатированный HTML *@
 @using Markdig
+
 <div class="markdown-body">
     @((MarkupString)HtmlContent)
 </div>
 
 @code{
     [Parameter] public string Content { get; set; } = string.Empty;
-    private string HtmlContent => Markdown.ToHtml(Content ?? string.Empty);
+
+    // Создаем пайплайн, который запрещает парсить HTML-теги, введенные пользователем
+    private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .DisableHtml() // <-- Вот эта строчка спасает от XSS, превращая <script> в обычный текст
+        .Build();
+
+    private string HtmlContent => Markdown.ToHtml(Content ?? string.Empty, Pipeline);
 }
