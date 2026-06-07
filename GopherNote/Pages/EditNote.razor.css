@@ -313,3 +313,8 @@
     gap: 10px;
     justify-content: flex-end;
 }
+.btn-modals-group{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
