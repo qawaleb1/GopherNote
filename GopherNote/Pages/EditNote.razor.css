@@ -788,4 +788,8 @@
         width: 90%;
         max-width: 280px;
     }
+.btn-modals-group{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }

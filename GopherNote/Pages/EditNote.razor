@@ -51,23 +51,21 @@
             <button type="button" class="pin-icon" style="margin-left: auto" @onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
 
             <dialog id="tagDialog" class="tag-dialog">
-                <form method="dialog">
-                    <h3 style="text-align: center">Добавить тег</h3>
-                    <input type="text"
-                           placeholder="Название тега..."
-                           class="dialog-input"
-                           @bind="newTag"
-                           @bind:event="oninput"
-                           @onkeyup="HandleTagKeyUp" />
-                    <div class="dialog-buttons">
-                        <button type="button" class="main-button" style="width: 50%;" @onclick="AddTagFromDialog">
-                            Добавить
-                        </button>
-                        <button type="button" class="btn-outline" style="width: 50%;" @onclick="CloseDialog">
-                            Отмена
-                        </button>
-                    </div>
-                </form>
+                <h3 style="text-align: center">Добавить тег</h3>
+                <input type="text"
+                       placeholder="Название тега..."
+                       class="dialog-input"
+                       @bind="newTag"
+                       @bind:event="oninput"
+                       @onkeydown="OnKeyDown" />
+                <div class="dialog-buttons">
+                    <button type="button" class="main-button" style="width: 50%;" @onclick="AddTagFromDialog">
+                        Добавить
+                    </button>
+                    <button type="button" class="btn-outline" style="width: 50%;" @onclick="CloseDialog">
+                        Отмена
+                    </button>
+                </div>
             </dialog>
         </div>
     </div>
@@ -127,11 +125,11 @@
         <button type="button" class="main-button" @onclick="HandleSave" disabled="@isSaving">
             @(isSaving ? "Сохранение..." : "Сохранить")
         </button>
-        <button type="button" class="btn-outline" @onclick="() => OnCancel.InvokeAsync()" disabled="@isSaving">Отмена</button>
-        
+        <button type="button" class="btn-outline" @onclick="ShowCancelWarning" disabled="@isSaving">Отмена</button>
+
         @if (!IsNewNote)
         {
-            <button type="button" class="btn-danger" @onclick="ExecuteDeleteAsync" disabled="@isSaving">Удалить</button>
+            <button type="button" class="btn-danger" @onclick="ShowDeleteWarning" disabled="@isSaving">Удалить</button>
         }
     </div>
 
@@ -149,6 +147,51 @@
                 <div class="custom-modal-actions">
                     <button type="button" class="main-button" @onclick="ConfirmSaveEmpty">Да, создать</button>
                     <button type="button" class="btn-outline" @onclick="CancelSaveEmpty">Нет</button>
+                </div>
+            </div>
+        </div>
+    }
+    @* Модальное окно подтверждения удаления *@
+    @if (showDeleteWarningModal)
+    {
+        <div class="custom-modal-overlay">
+            <div class="custom-modal-card">
+                <div class="custom-modal-header">
+                    <span class="warning-icon">⚠️</span>
+                    <h4>Удаление заметки</h4>
+                </div>
+                <div class="custom-modal-body">
+                    <p>Вы уверены, что хотите удалить заметку "<strong>@Note.Title</strong>"?</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">Это действие нельзя отменить.</p>
+                </div>
+                <div class="custom-modal-actions">
+                    <button type="button" class="btn-danger" style="width: 50%;"@onclick="ConfirmDelete">Да, удалить</button>
+                    <button type="button" class="btn-outline" style="width: 50%;"@onclick="CancelDeleteWarning">Отмена</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @* Модальное окно подтверждения отмены *@
+    @if (showCancelWarningModal)
+    {
+        <div class="custom-modal-overlay">
+            <div class="custom-modal-card">
+                <div class="custom-modal-header">
+                    <span class="warning-icon">⚠️</span>
+                    <h4>Отмена редактирования</h4>
+                </div>
+                <div class="custom-modal-body">
+                    <p>Все несохранённые изменения будут потеряны.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">Вы уверены, что хотите выйти без сохранения?</p>
+                </div>
+                <div class="btn-modals-group">
+                    <div class="custom-modal-actions">
+                        <button type="button" class="btn-outline" @onclick="CancelCancelWarning">Продолжить редактирование</button>
+                    </div>
+                    <div class="custom-modal-actions">
+                        <button type="button" class="btn-danger" style="width: 100%;"@onclick="ConfirmCancel">Выйти</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,6 +215,9 @@
     
     // Переменные для шаблонов
     private bool showTemplateMenu = false;
+
+    private bool showDeleteWarningModal = false;
+    private bool showCancelWarningModal = false;
 
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
@@ -312,9 +358,10 @@
         CloseDialog();
     }
 
-    private void OpenTagDialog()
+    private async Task OpenTagDialog()
     {
-        JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').showModal()");
+        newTag = ""; // Очищаем поле при открытии
+        await JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').showModal()");
     }
 
     private void CloseDialog()
@@ -322,6 +369,14 @@
         newTag = "";
         JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').close()");
     }
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddTagFromDialog();
+        }
+    }
+
     
     private async Task HandleSave()
     {
@@ -464,3 +519,41 @@
         Console.WriteLine($"=== ВЫБРАН ШАБЛОН: {templateId} -> {Note.TemplateClass} ===");
     }
 }   
+    // Предупреждение об удалении
+    private void ShowDeleteWarning()
+    {
+        showDeleteWarningModal = true;
+        StateHasChanged();
+    }
+
+    private void CancelDeleteWarning()
+    {
+        showDeleteWarningModal = false;
+        StateHasChanged();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        showDeleteWarningModal = false;
+        await ExecuteDeleteAsync();
+    }
+
+// Предупреждение об отмене
+    private void ShowCancelWarning()
+    {
+        showCancelWarningModal = true;
+        StateHasChanged();
+    }
+
+    private void CancelCancelWarning()
+    {
+        showCancelWarningModal = false;
+        StateHasChanged();
+    }
+
+    private async Task ConfirmCancel()
+    {
+        showCancelWarningModal = false;
+        await OnCancel.InvokeAsync();
+    }
+}
