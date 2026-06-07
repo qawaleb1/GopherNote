@@ -50,11 +50,22 @@
     transform: scale(1.02);
 }
 
-/* Панель инструментов */
+/* Панель инструментов (Исправлено для идеальных одинаковых расстояний) */
 .editor-toolbar {
+    width: 100%;
+}
+
+.toolbar-main-row {
     display: flex;
-    gap: 0.75rem;
     align-items: center;
+    gap: 12px; /* Фиксированный шаг между ВСЕМИ кнопками и группами цвета */
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* Сбрасываем дефолтные и случайные маргины, чтобы flex-gap работал корректно */
+.btn-color, .main-button, .btn-outline, .color-picker-group, .pin-icon {
+    margin: 0 !important;
 }
 
 .editor-toolbar select {
@@ -73,6 +84,38 @@
     border-color: var(--border-light);
 }
 
+/* Новая флекс-группа для палитры и её кнопки сброса */
+.color-picker-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px; /* Маленький зазор между кнопкой цвета и крестиком */
+}
+
+/* Компактная кнопка сброса цвета ✕ */
+.btn-reset-color {
+    background-color: var(--bg-input, #ef4444);
+    border: 1px solid var(--border-medium, #ccc);
+    color: var(--text-primary, #333);
+    border-radius: 8px;
+    padding: 0;
+    width: 28px;
+    height: 38px; /* Высота идеально совпадает с .btn-color и .main-button */
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.btn-reset-color:hover {
+    background-color: var(--error, #dc2626);
+    color: white;
+    border-color: var(--error);
+}
+
 /* Главная фиолетовая кнопка */
 .main-button {
     background: var(--accent);
@@ -80,10 +123,15 @@
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
+    height: 38px; /* Фиксируем высоту для выравнивания в сетке */
     font-weight: 500;
     font-size: 0.95rem;
     transition: background 0.2s, transform 0.1s;
     border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .main-button:hover {
@@ -101,10 +149,15 @@
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
+    height: 38px;
     font-weight: 500;
     font-size: 0.95rem;
     transition: background 0.2s;
     border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .btn-danger:hover {
@@ -119,9 +172,14 @@
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
+    height: 38px;
     font-weight: 500;
     font-size: 0.95rem;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .btn-outline:hover {
@@ -129,12 +187,15 @@
     border-color: var(--border-light);
     color: var(--text-primary);
 }
-.btn-color{
+
+/* Кнопка выбора цвета (Исправлено выравнивание высоты) */
+.btn-color {
     background: var(--accent);
     color: white;
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
+    height: 38px; /* Фиксируем высоту, чтобы совпадала со всеми кнопками пиксель-в-пиксель */
     font-weight: 500;
     font-size: 0.95rem;
     transition: background 0.2s, transform 0.1s;
@@ -143,8 +204,11 @@
     align-items: center;
     gap: 8px;
     position: relative;
+    justify-content: center;
+    box-sizing: border-box; /* Защита от перекоса размеров из-за внутренних отступов */
 }
-.btn-color-inside{
+
+.btn-color-inside {
     position: absolute;
     opacity: 0;
     width: 0;
@@ -228,9 +292,11 @@
     color: var(--text-primary);
     min-width: 300px;
 }
+
 .tag-dialog::backdrop {
     background: rgba(0,0,0,0.5);
 }
+
 .dialog-input {
     width: 100%;
     padding: 0.65rem 1rem;
@@ -241,6 +307,7 @@
     color: var(--text-primary);
     box-sizing: border-box;
 }
+
 .dialog-buttons {
     display: flex;
     gap: 10px;
