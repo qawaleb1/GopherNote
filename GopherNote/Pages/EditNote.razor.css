@@ -387,7 +387,7 @@
 
 /* Цвета для превью */
 .template-1 {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #393a62 0%, #3b3d6b 100%);
 }
 
 .template-2 {
@@ -599,7 +599,7 @@
 
 /* Шаблон 1 - Классический градиент (фиолетовый) */
 .note-card.note-template-1 {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #393a62 0%, #3b3d6b 100%);
     color: white;
 }
 

@@ -5,7 +5,10 @@
 
 <div class="editor-container">
     <div class="editor-header">
-        <input class="title-input" @bind="Note.Title" placeholder="Заголовок заметки..." />
+        <input class="title-input"
+               value="@Note.Title"
+               @oninput="OnTitleChanged"
+               placeholder="Заголовок заметки..." />
     </div>
 
     @* Верхняя панель: инструменты *@
@@ -126,7 +129,11 @@
 
     <div class="editor-body">
         <div class="textarea-wrapper">
-            <textarea id="md-editor-textarea" class="md-editor" @bind="Note.Content" @bind:event="oninput" placeholder="Пишите здесь..."></textarea>
+            <textarea id="md-editor-textarea"
+          class="md-editor"
+          value="@Note.Content"
+          @oninput="OnContentChanged"
+          placeholder="Пишите здесь..."></textarea>
 
             @if (isRecording)
             {
@@ -250,6 +257,9 @@
 
     private string tagErrorMessage = "";
 
+    private Note originalNote = null!;
+    private bool hasChanges = false;
+
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
         if (e.Key == "Enter") AddTag();
@@ -262,13 +272,16 @@
         // Устанавливаем шаблон по умолчанию, если его нет
         if (string.IsNullOrEmpty(Note.TemplateClass))
         {
-            Note.TemplateClass = "note-template-2";  // Меняем с 1 на 2
+            Note.TemplateClass = "note-template-2";
         }
 
         Console.WriteLine($"=== OnInitialized: TemplateClass = {Note.TemplateClass}, Title = {Note.Title} ===");
 
         SpeechService.OnRecognized += HandleSpeechRecognized;
         SpeechService.OnEnded += HandleSpeechEnded;
+
+        // Сохраняем оригинальное состояние после инициализации
+        SaveOriginalState();
     }
 
     protected override void OnParametersSet()
@@ -308,6 +321,7 @@
     {
         Note.Tags.Remove(tag);
         tagErrorMessage = ""; // Очищаем ошибку при удалении
+        CheckForChanges();
         StateHasChanged();
     }
 
@@ -331,6 +345,7 @@
         if (!string.IsNullOrWhiteSpace(final))
         {
             Note.Content += (string.IsNullOrWhiteSpace(Note.Content) ? "" : " ") + final;
+            CheckForChanges();
         }
         StateHasChanged();
     }
@@ -355,7 +370,12 @@
         }
     }
 
-    private void TogglePin() => Note.IsPinned = !Note.IsPinned;
+    private void TogglePin()
+    {
+        Note.IsPinned = !Note.IsPinned;
+        CheckForChanges();
+        StateHasChanged();
+    }
 
     private async Task WrapSelection(string prefix, string suffix)
     {
@@ -389,24 +409,23 @@
 
     private void AddTagFromDialog()
     {
-        tagErrorMessage = ""; // Очищаем сообщение об ошибке
+        tagErrorMessage = "";
 
         if (!string.IsNullOrWhiteSpace(newTag))
         {
             var cleanedTag = newTag.Trim().Replace("#", "");
 
-            // Проверка на максимальное количество тегов
             if (Note.Tags.Count >= MaxTags)
             {
                 tagErrorMessage = $"⚠️ Достигнуто максимальное количество тегов ({MaxTags}). Удалите лишние теги перед добавлением новых.";
                 return;
             }
 
-            // Проверка на дубликаты
             if (!Note.Tags.Contains(cleanedTag, StringComparer.OrdinalIgnoreCase))
             {
                 Note.Tags.Add(cleanedTag);
                 newTag = "";
+                CheckForChanges();
             }
             else
             {
@@ -465,6 +484,7 @@
         {
             Console.WriteLine($"=== ПЕРЕД СОХРАНЕНИЕМ: TemplateClass = {Note.TemplateClass} ===");
             await OnSave.InvokeAsync(Note);
+            SaveOriginalState();
             Console.WriteLine($"=== ПОСЛЕ СОХРАНЕНИЯ: TemplateClass = {Note.TemplateClass} ===");
         }
         catch (Exception ex)
@@ -573,6 +593,7 @@
 
         Note.TemplateClass = newTemplate;
         showTemplateMenu = false;
+        CheckForChanges();
         StateHasChanged();
 
         Console.WriteLine($"=== ВЫБРАН ШАБЛОН: {templateId} -> {Note.TemplateClass} ===");
@@ -596,12 +617,24 @@
          await ExecuteDeleteAsync();
      }
 
-// Предупреждение об отмене
-     private void ShowCancelWarning()
-     {
-         showCancelWarningModal = true;
-         StateHasChanged();
-     }
+
+    private void ShowCancelWarning()
+    {
+        // Проверяем, были ли изменения
+        CheckForChanges();
+
+        if (!hasChanges)
+        {
+            // Если изменений нет, сразу выходим без модального окна
+            ConfirmCancel();
+        }
+        else
+        {
+            // Если изменения есть, показываем предупреждение
+            showCancelWarningModal = true;
+            StateHasChanged();
+        }
+    }
 
      private void CancelCancelWarning()
      {
@@ -612,6 +645,67 @@
      private async Task ConfirmCancel()
      {
          showCancelWarningModal = false;
+         if (originalNote != null && hasChanges)
+         {
+             Note.Title = originalNote.Title;
+             Note.Content = originalNote.Content;
+             Note.IsPinned = originalNote.IsPinned;
+             Note.TemplateClass = originalNote.TemplateClass;
+             Note.Tags = originalNote.Tags != null ? new List<string>(originalNote.Tags) : new List<string>();
+         }
          await OnCancel.InvokeAsync();
+     }
+
+     private void SaveOriginalState()
+     {
+         originalNote = new Note
+         {
+             Id = Note.Id,
+             Title = Note.Title,
+             Content = Note.Content,
+             IsPinned = Note.IsPinned,
+             Color = Note.Color,
+             TextColor = Note.TextColor,
+             Tags = Note.Tags != null ? new List<string>(Note.Tags) : new List<string>(),
+             CreatedAt = Note.CreatedAt,
+             UpdatedAt = Note.UpdatedAt,
+             TemplateClass = Note.TemplateClass
+         };
+         hasChanges = false;
+     }
+
+     private void CheckForChanges()
+     {
+         if (originalNote == null) return;
+
+         bool titleChanged = originalNote.Title != Note.Title;
+         bool contentChanged = originalNote.Content != Note.Content;
+         bool pinnedChanged = originalNote.IsPinned != Note.IsPinned;
+         bool templateChanged = originalNote.TemplateClass != Note.TemplateClass;
+         bool tagsChanged = false;
+
+         if (originalNote.Tags != null && Note.Tags != null)
+         {
+             tagsChanged = !originalNote.Tags.SequenceEqual(Note.Tags);
+         }
+         else if (originalNote.Tags != null || Note.Tags != null)
+         {
+             tagsChanged = true;
+         }
+
+         hasChanges = titleChanged || contentChanged || pinnedChanged || templateChanged || tagsChanged;
+     }
+     private void OnTitleChanged(ChangeEventArgs e)
+     {
+         Note.Title = e.Value?.ToString() ?? "";
+         CheckForChanges();
+         StateHasChanged();
+     }
+
+     private void OnContentChanged(ChangeEventArgs e)
+     {
+         Note.Content = e.Value?.ToString() ?? "";
+         CheckForChanges();
+         StateHasChanged();
      }
 }
