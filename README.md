@@ -1,11 +1,11 @@
-# 📝 Blazor Notebook
+# 📝 GopherNote
 
-Простое веб-приложение для создания и управления заметками, построенное на **Blazor** WebAssembly.
+Простое веб-приложение для создания и управления заметками с поддержкой Markdown-синтаксиса, построенное на **Blazor** WebAssembly.
 
 ## ✨ Возможности
 
 - ➕ Создание, редактирование и удаление заметок
-- 💾 Автоматическое сохранение localStorage
+- 💾 Автоматическое сохранение в localStorage в вашем любимом браузере
 - 🏷️ Категории/теги для заметок 
 - 🌙 Тёмная/светлая тема 
 - 📌 Закрепление важных заметок вверху списка
@@ -21,13 +21,12 @@
 ## 📋 Требования
 
 - [.NET SDK](https://dotnet.microsoft.com/download) (версия 8.0 или выше)
-- [Rider](https://www.jetbrains.com/ru-ru/rider/) 
 - Браузер на основе Chromium
 - C# 12 и выше
 
 ## 🚀 Установка и запуск
 
-Клонируйте репозиторий командой `git clone https://github.com/Vo1dS/GopherNote.git`, затем перейдите в папку проекта `cd GopherNote`, восстановите все зависимости командой `dotnet restore` и запустите приложение: используйте `dotnet run --project GopherNote.Client`.
+Клонируйте репозиторий командой `git clone https://github.com/Vo1dS/GopherNote.git`, затем перейдите в папку проекта `cd GopherNote`, восстановите все зависимости командой `dotnet restore` и запустите приложение: используйте `dotnet run --project GopherNote`.
 
 ## 📁 Структура проекта
 
@@ -41,9 +40,6 @@
 
 Для смены типа хранения данных откройте файл Program.cs и измените регистрацию сервиса: для localStorage используйте `builder.Services.AddScoped<INoteService, LocalStorageService>()`.
 
-## 🧪 Тестирование
-
-Запустите все тесты командой `dotnet test`. Для запуска с детализацией используйте `dotnet test --verbosity normal`.
 
 ## 🤝 Вклад в проект
 
