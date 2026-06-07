@@ -156,7 +156,10 @@
 
     private void CreateNewNote()
     {
-        currentEditingNote = new Note();
+        currentEditingNote = new Note 
+        { 
+            TemplateClass = "note-template-2"  // Меняем с 1 на 2
+        };
         isEditing = true;
     }
 
@@ -171,7 +174,9 @@
             Color = note.Color,
             TextColor = note.TextColor,
             Tags = note.Tags != null ? new List<string>(note.Tags) : new List<string>(),
-            CreatedAt = note.CreatedAt
+            CreatedAt = note.CreatedAt,
+            UpdatedAt = note.UpdatedAt,
+            TemplateClass = note.TemplateClass  
         };
         isEditing = true;
     }
@@ -183,6 +188,7 @@
         var index = allNotes.FindIndex(n => n.Id == note.Id);
         if (index != -1)
         {
+            // Обновляем существующую заметку, включая TemplateClass
             allNotes[index] = note;
         }
         else
