@@ -5,31 +5,31 @@
         <span class="pin-icon" @onclick="TogglePin">@(Note.IsPinned ? "★" : "☆")</span>
         <h4>@Note.Title</h4>
     </div>
-    
+
     <div class="note-preview">
         <MarkdownView Content="@(Note.Content.Length > 100 ? Note.Content.Substring(0,100) + "..." : Note.Content)"/>
     </div>
-    
+
     @if (Note.Tags != null && Note.Tags.Any())
     {
         <div class="note-tags">
             @foreach (var tag in Note.Tags.Take(5))
             {
-                <span class="tag">#@tag</span>
+                <span class="tag" title="@tag">#@TruncateTag(tag)</span>
             }
-            
+
             @if (Note.Tags.Count > 5)
             {
-                <span class="tag tag-more">
-                    + @(Note.Tags.Count - 5)
-                    
+                <div class="tag-more">
+                    <span class="tag">+ @(Note.Tags.Count - 5)</span>
+
                     <div class="tooltip-grid">
                         @foreach (var tag in Note.Tags.Skip(5))
                         {
-                            <span class="tooltip-tag">#@tag</span>
+                            <span class="tooltip-tag" title="@tag">#@TruncateTag(tag)</span>
                         }
                     </div>
-                </span>
+                </div>
             }
         </div>
     }
@@ -56,15 +56,23 @@
 
     private string GetTemplateClass()
     {
-        // Если есть сохраненный шаблон, используем его
         if (!string.IsNullOrEmpty(Note.TemplateClass))
             return Note.TemplateClass;
-        
-        // Для обратной совместимости со старыми заметками
+
         if (!string.IsNullOrEmpty(Note.Color) && Note.Color.StartsWith("template-"))
             return $"note-{Note.Color}";
-        
-        // По умолчанию - первый шаблон
+
         return "note-template-1";
+    }
+
+    private string TruncateTag(string tag)
+    {
+        if (string.IsNullOrEmpty(tag))
+            return "";
+
+        if (tag.Length > 16)
+            return tag.Substring(0, 13) + "...";
+
+        return tag;
     }
 }

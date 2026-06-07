@@ -60,10 +60,13 @@
         if (dark)
         {
             await JS.InvokeVoidAsync("eval", "document.documentElement.classList.add('dark-theme')");
+            // Также добавим атрибут для :root
+            await JS.InvokeVoidAsync("eval", "document.documentElement.setAttribute('data-theme', 'dark')");
         }
         else
         {
             await JS.InvokeVoidAsync("eval", "document.documentElement.classList.remove('dark-theme')");
+            await JS.InvokeVoidAsync("eval", "document.documentElement.setAttribute('data-theme', 'light')");
         }
     }
 }

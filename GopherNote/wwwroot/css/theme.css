@@ -1,62 +1,16 @@
-﻿/* СВЕТЛАЯ ТЕМА (по умолчанию) */
+﻿/* ТЁМНАЯ ТЕМА (по умолчанию) */
 :root {
     /* Фоны */
-    --bg-page: #f8fafc;        /* Добавляем фон страницы */
-    --bg-sidebar: #ffffff;      /* Сайдбар белый (отличается от фона страницы) */
-    --bg-card: #ffffff;         /* Карточки белые */
-    --bg-input: #f8f9fa;
-    --bg-quote: #f8f9fa;        /* Фон для цитаты */
-
-    /* Текст */
-    --text-primary: #0f172a;
-    --text-muted: #334155;
-    --text-preview: #64748b;    /* Для текста превью заметки */
-
-    /* Границы */
-    --border-light: #eef2f6;
-    --border-medium: #e2e8f0;
-
-    /* Акценты */
-    --accent: #6366f1;
-    --accent-hover: #4f46e5;
-    --accent-light: rgba(99, 102, 241, 0.1);
-
-    /* Цвета для заметок */
-    --note-white: #ffffff;
-    --note-light-gray: #f5f5f5;
-    --note-gray: #e0e0e0;
-
-    /* Звездочка (pin) */
-    --pin-color: #f59e0b;
-    --pin-hover: #d97706;
-
-    /* Тени */
-    --shadow-sm: 0 10px 25px -5px rgba(0, 0, 0, 0.02), 0 8px 16px -6px rgba(0, 0, 0, 0.01);
-    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
-
-    /* Цвета для кнопок */
-    --error: #ef4444;
-    --error-hover: #dc2626;
-
-    /* Цвета для голосового ввода */
-    --voice-bg: #fffbeb;
-    --voice-border: #fde68a;
-    --voice-text: #b45309;
-}
-
-/* ТЁМНАЯ ТЕМА */
-.dark-theme {
-    /* Фоны */
-    --bg-page: #0f172a;         /* Темный фон страницы */
+    --bg-page: #0f172a;
     --bg-sidebar: #1e293b;
     --bg-card: #1e293b;
     --bg-input: #334155;
-    --bg-quote: #1e293b;        /* Фон цитаты в темной теме */
+    --bg-quote: #1e293b;
 
     /* Текст */
     --text-primary: #f1f5f9;
     --text-muted: #cbd5e1;
-    --text-preview: #94a3b8;    /* Для превью в темной теме */
+    --text-preview: #94a3b8;
 
     /* Границы */
     --border-light: #334155;
@@ -67,8 +21,8 @@
     --accent-hover: #6366f1;
     --accent-light: rgba(129, 140, 248, 0.15);
 
-    /* Цвета для заметок в темной теме */
-    --note-white: #2d3748;       /* Темные аналоги */
+    /* Цвета для заметок */
+    --note-white: #2d3748;
     --note-light-gray: #374151;
     --note-gray: #4b5563;
 

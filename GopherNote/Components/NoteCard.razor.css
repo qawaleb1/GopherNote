@@ -4,6 +4,8 @@
     border-radius: 14px;
     padding: 24px;
     max-width: 360px;
+    width: 100%;
+    min-width: 0; /* Важно для flex-контейнеров */
     height: 320px;
     max-height: 320px;
     min-height: 0;
@@ -13,6 +15,7 @@
     flex-direction: column;
     overflow: hidden;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    box-sizing: border-box;
 }
 
 /* ЗАМЕТКА СО ЗВЕЗДОЙ: получает фиолетовую рамку */
@@ -29,6 +32,7 @@
     margin-bottom: 8px;
     max-width: 100%;
     overflow: hidden;
+    min-width: 0;
 }
 
 .note-header h4 {
@@ -40,37 +44,36 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
+    min-width: 0;
 }
-
 
 /* Звездочка - общая для всех шаблонов */
 .pin-icon {
     width: 24px;
     font-size: 1.15rem;
-    color: #ffffff;  /* Белый цвет */
+    color: #ffffff;
     cursor: pointer;
     transition: transform 0.2s;
+    flex-shrink: 0;
 }
 
 .pin-icon:hover {
-    color: #f0f0f0;  /* Светло-серый при наведении */
+    color: #f0f0f0;
     transform: scale(1.1);
 }
 
 /* Текст превью */
 .note-preview {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--text-preview);
-    line-height: 1.5;
-    margin: 0 0 16px 0;
+    line-height: 1.4;
+    margin: 0 0 12px 0;
     flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
-
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 100%);
 }
 
 .note-preview::-webkit-scrollbar {
@@ -87,28 +90,39 @@
     border-radius: 4px;
 }
 
-/* Стили для контейнера тегов на карточке */
+/* Стили для контейнера тегов на карточке - ИСПРАВЛЕНО */
 .note-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 15px;
+    overflow-x: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-/* Внешний вид самих тегов */
+/* Внешний вид самих тегов - ИСПРАВЛЕНО */
 .tag {
     background-color: var(--bg-input, #f0f0f0);
     color: var(--text-primary, #333);
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
     border: 1px solid var(--border-light, #ccc);
-    word-break: break-all;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    word-break: keep-all;
 }
 
 /* Футер и кнопка */
 .note-footer {
     width: 100%;
+    flex-shrink: 0;
 }
 
 .btn-edit {
@@ -133,72 +147,67 @@
 .tag-more {
     position: relative;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .tag-more .tooltip-grid {
     position: absolute;
-
-    /* Прижимаем к правому нижнему углу кнопки '+ 67' */
-    bottom: 100%;                 /* Растет строго ВВЕРХ */
-    right: 0;                     /* Растет строго ВЛЕВО */
-
-    /* Небольшое смещение для красивой анимации */
+    bottom: 100%;
+    right: 0;
     transform: translateY(8px) scale(0.95);
-    transform-origin: bottom right; /* Точка анимации из правого нижнего угла */
-
+    transform-origin: bottom right;
     background-color: #1f2937;
     border: 1px solid #374151;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5);
-
-    /* Сетка-таблица */
     display: grid;
     grid-template-columns: repeat(3, minmax(60px, auto));
     gap: 6px;
     width: max-content;
-
-    /* Ограничение высоты и скролл */
+    max-width: 280px;
     max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
-
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
     z-index: 999;
-}   
+}
 
 /* Красивое оформление скроллбара внутри таблички тегов */
 .tag-more .tooltip-grid::-webkit-scrollbar {
-    width: 6px;                   /* Ширина полосы прокрутки */
+    width: 6px;
 }
 
 .tag-more .tooltip-grid::-webkit-scrollbar-track {
-    background: #1f2937;          /* Фон дорожки скролла */
+    background: #1f2937;
     border-radius: 8px;
 }
 
 .tag-more .tooltip-grid::-webkit-scrollbar-thumb {
-    background: #4b5563;          /* Цвет самого ползунка */
+    background: #4b5563;
     border-radius: 8px;
 }
 
 .tag-more .tooltip-grid::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;          /* Цвет ползунка при наведении */
+    background: #6b7280;
 }
 
-
-
-/* Стили для мини-тегов внутри таблички */
+/* Стили для мини-тегов внутри таблички - ИСПРАВЛЕНО */
 .tooltip-tag {
     background: #2d3748;
     color: #e2e8f0;
     padding: 4px 8px;
     border-radius: 4px;
-    font-size: 0.75rem;
-    white-space: nowrap;          /* Чтобы тег не переносился внутри ячейки */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    white-space: nowrap;
     text-align: center;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Показываем табличку при наведении */
@@ -207,6 +216,7 @@
     pointer-events: auto;
     transform: translateY(0) scale(1);
 }
+
 /* ========== ШАБЛОНЫ КАРТОЧЕК ========== */
 
 /* Шаблон 1 - Классический градиент (фиолетовый) */
@@ -228,8 +238,6 @@
     color: white;
     border-color: rgba(255, 255, 255, 0.3);
 }
-
-
 
 /* Шаблон 2 - Минимализм (адаптивный под тему) */
 .note-card.note-template-2 {
@@ -286,8 +294,6 @@
     border-color: rgba(72, 120, 184, 0.5);
 }
 
-
-
 .note-card.note-template-3 .btn-edit {
     background: rgba(72, 120, 184, 0.8);
     color: #e8f0fe;
@@ -317,8 +323,6 @@
     border-color: rgba(64, 128, 128, 0.5);
 }
 
-
-
 .note-card.note-template-4 .btn-edit {
     background: rgba(64, 128, 128, 0.8);
     color: #e0f0f0;
@@ -327,7 +331,6 @@
 .note-card.note-template-4 .btn-edit:hover {
     background: rgba(64, 128, 128, 1);
 }
-
 
 /* ========== ЗАКРЕПЛЕННЫЕ ЗАМЕТКИ ========== */
 /* Единый стиль для всех шаблонов */
@@ -361,9 +364,128 @@
 .dark-theme .note-card.note-template-2 .btn-edit:hover {
     background: var(--accent-hover);
 }
+
 /* Анимация при смене шаблона */
 .note-card {
     transition: all 0.3s ease-in-out;
 }
 
+/* ========== ИСПРАВЛЕНИЕ ДЛЯ ТУЛТИПА ТЕГОВ ========== */
+.note-card {
+    overflow: visible !important; /* Разрешаем вылезать за пределы карточки */
+}
 
+.note-tags {
+    overflow: visible !important; /* Чтобы тултип не обрезался */
+}
+
+/* Контейнер кнопки "+ еще X" */
+.tag-more {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+/* Добавляем невидимую область-мостик между кнопкой и тултипом */
+.tag-more::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: transparent;
+}
+
+/* Тултип-сетка */
+.tag-more .tooltip-grid {
+    position: absolute;
+    bottom: auto;
+    top: 100%;
+    right: 0;
+    margin-top: 4px; /* Уменьшаем отступ */
+    transform: translateY(-4px) scale(0.95);
+    transform-origin: top right;
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(60px, auto));
+    gap: 6px;
+    width: max-content;
+    max-width: 280px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index: 9999;
+}
+
+/* Показываем при наведении на кнопку ИЛИ на сам тултип */
+.tag-more:hover .tooltip-grid,
+.tag-more .tooltip-grid:hover {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+/* Также показываем при наведении на невидимую область-мостик */
+.tag-more:hover::after + .tooltip-grid {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Стили для скроллбара */
+.tag-more .tooltip-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 8px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 8px;
+}
+
+.tag-more .tooltip-grid::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+.tooltip-tag {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Для шаблонов с градиентом - делаем фон тултипа контрастным */
+.note-card.note-template-1 .tag-more .tooltip-grid,
+.note-card.note-template-3 .tag-more .tooltip-grid,
+.note-card.note-template-4 .tag-more .tooltip-grid {
+    background-color: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.note-card.note-template-1 .tooltip-tag,
+.note-card.note-template-3 .tooltip-tag,
+.note-card.note-template-4 .tooltip-tag {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}

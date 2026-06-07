@@ -31,8 +31,9 @@
     border-bottom-color: var(--accent);
 }
 
-/* Кнопка закрепления (Звезда в редакторе) */
-.pin-icon {
+/* Кнопка закрепления в редакторе */
+.editor-container .pin-icon,
+.editor-actions .pin-icon {
     background: var(--bg-input);
     border: 1px solid var(--border-medium);
     padding: 8px 16px;
@@ -42,14 +43,21 @@
     color: var(--pin-color);
     font-weight: 500;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-width: fit-content;
+    height: auto;
+    line-height: normal;
 }
 
-.pin-icon:hover {
+.editor-container .pin-icon:hover,
+.editor-actions .pin-icon:hover {
     background: var(--accent-light);
     color: var(--pin-hover);
     transform: scale(1.02);
 }
-
 /* Панель инструментов (Исправлено для идеальных одинаковых расстояний) */
 .editor-toolbar {
     width: 100%;
@@ -58,12 +66,11 @@
 .toolbar-main-row {
     display: flex;
     align-items: center;
-    gap: 12px; /* Фиксированный шаг между ВСЕМИ кнопками и группами цвета */
+    gap: 12px;
     flex-wrap: wrap;
     width: 100%;
 }
 
-/* Сбрасываем дефолтные и случайные маргины, чтобы flex-gap работал корректно */
 .btn-color, .main-button, .btn-outline, .color-picker-group, .pin-icon {
     margin: 0 !important;
 }
@@ -88,7 +95,7 @@
 .color-picker-group {
     display: inline-flex;
     align-items: center;
-    gap: 4px; /* Маленький зазор между кнопкой цвета и крестиком */
+    gap: 4px;
 }
 
 /* Компактная кнопка сброса цвета ✕ */
@@ -99,7 +106,7 @@
     border-radius: 8px;
     padding: 0;
     width: 28px;
-    height: 38px; /* Высота идеально совпадает с .btn-color и .main-button */
+    height: 38px;
     font-size: 0.85rem;
     font-weight: bold;
     cursor: pointer;
@@ -123,7 +130,7 @@
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
-    height: 38px; /* Фиксируем высоту для выравнивания в сетке */
+    height: 38px;
     font-weight: 500;
     font-size: 0.95rem;
     transition: background 0.2s, transform 0.1s;
@@ -195,7 +202,7 @@
     border-radius: 8px;
     cursor: pointer;
     padding: 0.6rem 1.2rem;
-    height: 38px; /* Фиксируем высоту, чтобы совпадала со всеми кнопками пиксель-в-пиксель */
+    height: 38px;
     font-weight: 500;
     font-size: 0.95rem;
     transition: background 0.2s, transform 0.1s;
@@ -205,7 +212,7 @@
     gap: 8px;
     position: relative;
     justify-content: center;
-    box-sizing: border-box; /* Защита от перекоса размеров из-за внутренних отступов */
+    box-sizing: border-box;
 }
 
 .btn-color-inside {
@@ -519,13 +526,13 @@
 .tag-more .tooltip-grid {
     position: absolute;
 
-    /* Прижимаем к правому нижнему углу кнопки '+ 67' */
-    bottom: 100%;                 /* Растет строго ВВЕРХ */
-    right: 0;                     /* Растет строго ВЛЕВО */
 
-    /* Небольшое смещение для красивой анимации */
+    bottom: 100%;
+    right: 0;
+
+
     transform: translateY(8px) scale(0.95);
-    transform-origin: bottom right; /* Точка анимации из правого нижнего угла */
+    transform-origin: bottom right;
 
     background-color: #1f2937;
     border: 1px solid #374151;
@@ -533,13 +540,13 @@
     border-radius: 8px;
     box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5);
 
-    /* Сетка-таблица */
+
     display: grid;
     grid-template-columns: repeat(3, minmax(60px, auto));
     gap: 6px;
     width: max-content;
 
-    /* Ограничение высоты и скролл */
+
     max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -552,21 +559,21 @@
 
 /* Красивое оформление скроллбара внутри таблички тегов */
 .tag-more .tooltip-grid::-webkit-scrollbar {
-    width: 6px;                   /* Ширина полосы прокрутки */
+    width: 6px;
 }
 
 .tag-more .tooltip-grid::-webkit-scrollbar-track {
-    background: #1f2937;          /* Фон дорожки скролла */
+    background: #1f2937;
     border-radius: 8px;
 }
 
 .tag-more .tooltip-grid::-webkit-scrollbar-thumb {
-    background: #4b5563;          /* Цвет самого ползунка */
+    background: #4b5563;
     border-radius: 8px;
 }
 
 .tag-more .tooltip-grid::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;          /* Цвет ползунка при наведении */
+    background: #6b7280;
 }
 
 
@@ -578,7 +585,7 @@
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.75rem;
-    white-space: nowrap;          /* Чтобы тег не переносился внутри ячейки */
+    white-space: nowrap;
     text-align: center;
 }
 
@@ -743,7 +750,7 @@
 
 /* Тёмная тема для Минимализма - используем переменные */
 .dark-theme .note-card.note-template-2 {
-    background: var(--bg-card);  /* Это будет #1f2937 (тёмно-серый) */
+    background: var(--bg-card);
     border-color: var(--border-light);
 }
 
@@ -787,10 +794,11 @@
         flex-direction: column;
         width: 90%;
         max-width: 280px;
+
+        .btn-modals-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
     }
-.btn-modals-group{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
 }
