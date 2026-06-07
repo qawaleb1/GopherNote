@@ -7,19 +7,45 @@
         <input class="title-input" @bind="Note.Title" placeholder="Заголовок заметки..." />
     </div>
 
-    @* Верхняя панель: только основные инструменты *@
+    @* Верхняя панель: инструменты с одинаковым расстоянием и кнопками сброса *@
     <div class="editor-toolbar">
         <div class="toolbar-main-row">
-            <label class="btn-color">
-                <span>Выбрать цвет</span>
-                <input type="color" @bind="Note.Color" class="btn-color-inside"/>
-            </label>
+            
+            <div class="color-picker-group">
+                <label class="btn-color">
+                    <span>Цвет фона</span>
+                    <input type="color" 
+                           value="@(string.IsNullOrEmpty(Note.Color) || Note.Color == "#00000000" ? "#ffffff" : Note.Color)" 
+                           @onchange="@((ChangeEventArgs e) => Note.Color = e.Value?.ToString() ?? "#ffffff")" 
+                           class="btn-color-inside"/>
+                </label>
+                @if (!string.IsNullOrEmpty(Note.Color) && Note.Color != "#ffffff" && Note.Color != "#00000000")
+                {
+                    <button type="button" class="btn-reset-color" @onclick='() => Note.Color = "#ffffff"' title="Сбросить цвет фона">✕</button>
+                }
+            </div>
 
-            <button class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording">
+            <div class="color-picker-group">
+                <label class="btn-color">
+                    <span>Цвет текста</span>
+                    <input type="color" 
+                           value="@(Note.TextColor == "#00000000" ? "#000000" : Note.TextColor)" 
+                           @onchange="@((ChangeEventArgs e) => Note.TextColor = e.Value?.ToString() ?? "#000000")" 
+                           class="btn-color-inside"/>
+                </label>
+                @if (Note.TextColor != "#00000000")
+                {
+                    <button type="button" class="btn-reset-color" @onclick='() => Note.TextColor = "#00000000"' title="Вернуть авто-контраст текста">✕</button>
+                }
+            </div>
+
+            <button type="button" class="@(isRecording ? "btn-danger" : "main-button")" @onclick="ToggleRecording" disabled="@isSaving">
                 @(isRecording ? "⏹ Остановить запись" : "🎙 Голосовой ввод")
             </button>
-            <button class="main-button" onclick="document.getElementById('tagDialog').showModal()">Добавить тег</button>
-            <button class="pin-icon" style="margin-left: auto"@onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
+            
+            <button type="button" class="main-button" @onclick="OpenTagDialog" disabled="@isSaving">Добавить тег</button>
+            
+            <button type="button" class="pin-icon" style="margin-left: auto" @onclick="TogglePin">@(Note.IsPinned ? "★ Закреплено" : "☆ Закрепить")</button>
 
             <dialog id="tagDialog" class="tag-dialog">
                 <form method="dialog">
@@ -57,7 +83,7 @@
         </div>
     }
 
-    @* ПАНЕЛЬ ФОРМАТИРОВАНИЯ: Перенесена под теги и выровнена по левому краю над окном ввода *@
+    @* Панель форматирования *@
     <div class="markdown-toolbar" style="margin-bottom: 0.75rem; justify-content: flex-start;">
         <button type="button" class="btn-outline btn-md-format" style="font-weight: bold;" @onclick='() => WrapSelection("**", "**")' title="Жирный">B</button>
         <button type="button" class="btn-outline btn-md-format" style="font-style: italic;" @onclick='() => WrapSelection("*", "*")' title="Курсив">I</button>
@@ -82,20 +108,31 @@
             }
         </div>
 
-        <div class="md-preview" style="background-color: @Note.Color">
+        <div class="md-preview" style="background-color: @Note.Color; color: @ResolveTextColor()">
             <MarkdownView Content="@Note.Content"/>
         </div>
     </div>
 
+    @* Индикация ошибок сети / сохранения *@
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="error-toast" style="background-color: var(--error, #ef4444); color: white; padding: 12px 16px; border-radius: 8px; font-size: 0.95rem; font-weight: 500; margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
+            @errorMessage
+        </div>
+    }
+
     <div class="editor-actions">
-        <button class="main-button" @onclick="HandleSave">Сохранить</button>
-        <button class="btn-outline" @onclick="() => OnCancel.InvokeAsync()">Отмена</button>
+        <button type="button" class="main-button" @onclick="HandleSave" disabled="@isSaving">
+            @(isSaving ? "Сохранение..." : "Сохранить")
+        </button>
+        <button type="button" class="btn-outline" @onclick="() => OnCancel.InvokeAsync()" disabled="@isSaving">Отмена</button>
         
         @if (!IsNewNote)
         {
-            <button class="btn-danger" @onclick="() => OnDelete.InvokeAsync(Note)">Удалить</button>
+            <button type="button" class="btn-danger" @onclick="ExecuteDeleteAsync" disabled="@isSaving">Удалить</button>
         }
     </div>
+
     @if (showEmptyWarningModal)
     {
         <div class="custom-modal-overlay">
@@ -108,8 +145,8 @@
                     <p>Вы точно хотите создать пустую заметку?</p>
                 </div>
                 <div class="custom-modal-actions">
-                    <button class="main-button" @onclick="ConfirmSaveEmpty">Да, создать</button>
-                    <button class="btn-outline" @onclick="CancelSaveEmpty">Нет</button>
+                    <button type="button" class="main-button" @onclick="ConfirmSaveEmpty">Да, создать</button>
+                    <button type="button" class="btn-outline" @onclick="CancelSaveEmpty">Нет</button>
                 </div>
             </div>
         </div>
@@ -127,6 +164,9 @@
     private string interimText = "Говорите...";
     private string newTag = "";
     private bool showEmptyWarningModal = false;
+    
+    private string? errorMessage = null;
+    private bool isSaving = false;
 
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
@@ -234,7 +274,7 @@
         public int Start { get; set; }
         public int End { get; set; }
     }
-    //для dialog
+
     private void AddTagFromDialog()
     {
         if (!string.IsNullOrWhiteSpace(newTag))
@@ -249,12 +289,18 @@
         CloseDialog();
     }
 
+    private void OpenTagDialog()
+    {
+        JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').showModal()");
+    }
+
     private void CloseDialog()
     {
         newTag = "";
         JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').close()");
     }
     
+    // БЕЗОПАСНОЕ СОХРАНЕНИЕ С TRY-CATCH СЕТИ
     private async Task HandleSave()
     {
         bool isTitleEmpty = string.IsNullOrWhiteSpace(Note.Title);
@@ -266,17 +312,81 @@
             return;
         }
         
-        await OnSave.InvokeAsync(Note);
+        await ExecuteSaveAsync();
     }
     
     private async Task ConfirmSaveEmpty()
     {
         showEmptyWarningModal = false;
-        await OnSave.InvokeAsync(Note);
+        await ExecuteSaveAsync();
+    }
+
+    private async Task ExecuteSaveAsync()
+    {
+        errorMessage = null;
+        isSaving = true;
+        try
+        {
+            await OnSave.InvokeAsync(Note);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка сохранения: {ex.Message}");
+            errorMessage = "⚠️ Не удалось сохранить заметку. Попробуйте позже.";
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private async Task ExecuteDeleteAsync()
+    {
+        errorMessage = null;
+        isSaving = true;
+        try
+        {
+            await OnDelete.InvokeAsync(Note);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка удаления: {ex.Message}");
+            errorMessage = "⚠️ Не удалось удалить заметку. Попробуйте позже.";
+        }
+        finally
+        {
+            isSaving = false;
+        }
     }
     
     private void CancelSaveEmpty()
     {
         showEmptyWarningModal = false;
+    }
+    
+    private string ResolveTextColor()
+    {
+        if (string.IsNullOrEmpty(Note.TextColor) || Note.TextColor == "#00000000")
+        {
+            if (string.IsNullOrWhiteSpace(Note.Color) || !Note.Color.StartsWith("#"))
+                return "var(--text-primary)";
+
+            try
+            {
+                string hex = Note.Color.Trim().Replace("#", "");
+                int r = Convert.ToInt32(hex.Substring(0, 2), 16);
+                int g = Convert.ToInt32(hex.Substring(2, 2), 16);
+                int b = Convert.ToInt32(hex.Substring(4, 2), 16);
+
+                int yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                return yiq >= 128 ? "#000000" : "#FFFFFF";
+            }
+            catch
+            {
+                return "var(--text-primary)";
+            }
+        }
+
+        return Note.TextColor;
     }
 }

@@ -1,8 +1,9 @@
 ﻿@using GopherNote.Models
 
-
-<div class="note-card @(Note.IsPinned ? "pinned-style" : "")" style="background-color: @Note.Color">
+@* Добавляем динамический цвет текста color: @ResolveTextColor() в атрибут style *@
+<div class="note-card @(Note.IsPinned ? "pinned-style" : "")" style="background-color: @Note.Color; color: @ResolveTextColor();">
     <div class="note-header">
+        @* Иконке звезды тоже можно явно задать цвет, если она сливается, или оставить дефолтной *@
         <span class="pin-icon" @onclick="TogglePin">@(Note.IsPinned ? "★" : "☆")</span>
         <h4>@Note.Title</h4>
     </div>
@@ -54,5 +55,26 @@
     private async Task EditNote()
     {
         await OnEdit.InvokeAsync(Note);
+    }
+
+    private string ResolveTextColor()
+    {
+        if (string.IsNullOrEmpty(Note.TextColor) || Note.TextColor == "#00000000")
+        {
+            if (string.IsNullOrWhiteSpace(Note.Color) || !Note.Color.StartsWith("#"))
+                return "var(--text-primary)";
+
+            try
+            {
+                string hex = Note.Color.Trim().Replace("#", "");
+                int r = Convert.ToInt32(hex.Substring(0, 2), 16);
+                int g = Convert.ToInt32(hex.Substring(2, 2), 16);
+                int b = Convert.ToInt32(hex.Substring(4, 2), 16);
+
+                return (((r * 299) + (g * 587) + (b * 114)) / 1000) >= 128 ? "#000000" : "#FFFFFF";
+            }
+            catch { return "var(--text-primary)"; }
+        }
+        return Note.TextColor;
     }
 }

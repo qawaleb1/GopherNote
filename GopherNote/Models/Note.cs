@@ -11,4 +11,5 @@ public class Note
     public List<string> Tags { get; set; } = new List<string>();
 
     public string Color { get; set; } = "#ffffff";
+    public string TextColor { get; set; } = "#00000000";
 }
