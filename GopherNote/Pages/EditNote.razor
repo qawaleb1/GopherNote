@@ -52,14 +52,29 @@
 
             <dialog id="tagDialog" class="tag-dialog">
                 <h3 style="text-align: center">Добавить тег</h3>
+
+
+                <div style="text-align: center; margin-bottom: 10px; font-size: 0.8rem; color: var(--text-muted);">
+                    Тегов: @Note.Tags.Count / @MaxTags
+                </div>
+
                 <input type="text"
                        placeholder="Название тега..."
                        class="dialog-input"
                        @bind="newTag"
                        @bind:event="oninput"
                        @onkeydown="OnKeyDown" />
+
+                @* Отображение ошибки *@
+                @if (!string.IsNullOrEmpty(tagErrorMessage))
+                {
+                    <div style="color: #ef4444; font-size: 0.75rem; margin-top: 8px; text-align: center;">
+                        @tagErrorMessage
+                    </div>
+                }
+
                 <div class="dialog-buttons">
-                    <button type="button" class="main-button" style="width: 50%;" @onclick="AddTagFromDialog">
+                    <button type="button" class="main-button" style="width: 50%;" @onclick="AddTagFromDialog" disabled="@(Note.Tags.Count >= MaxTags)">
                         Добавить
                     </button>
                     <button type="button" class="btn-outline" style="width: 50%;" @onclick="CloseDialog">
@@ -71,9 +86,9 @@
     </div>
 
     @* Блок отображения тегов *@
-    @if (Note.Tags != null && Note.Tags.Any())
-    {
-        <div class="tags" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.5rem;">
+    <div class="tags" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.5rem;">
+        @if (Note.Tags != null && Note.Tags.Any())
+        {
             @foreach(var tag in Note.Tags)
             {
                 <span class="tag" style="background: var(--bg-input); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; border: 1px solid var(--border-light); color: var(--text-primary);">
@@ -81,8 +96,20 @@
                     <span class="remove-tag" style="color: var(--error); cursor: pointer; margin-left: 5px; font-weight: bold;" @onclick="() => RemoveTag(tag)">×</span>
                 </span>
             }
-        </div>
-    }
+
+            @* Сообщение о достижении лимита *@
+            @if (Note.Tags.Count >= MaxTags)
+            {
+                <span style="font-size: 0.7rem; color: #ef4444; margin-left: 8px;">
+                    ⚠️ Лимит @MaxTags тегов
+                </span>
+            }
+        }
+        else
+        {
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Нет тегов</span>
+        }
+    </div>
 
     @* Панель форматирования *@
     <div class="markdown-toolbar" style="margin-bottom: 0.75rem; justify-content: flex-start;">
@@ -199,6 +226,8 @@
 </div>
 
 @code {
+    private const int MaxTags = 11;
+
     [Parameter] public Note Note { get; set; } = new();
     [Parameter] public EventCallback<Note> OnSave { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
@@ -218,6 +247,8 @@
 
     private bool showDeleteWarningModal = false;
     private bool showCancelWarningModal = false;
+
+    private string tagErrorMessage = "";
 
     private void HandleTagKeyUp(KeyboardEventArgs e)
     {
@@ -252,9 +283,19 @@
 
     private void AddTag()
     {
+        tagErrorMessage = "";
+
         if (!string.IsNullOrWhiteSpace(newTag))
         {
             var cleanedTag = newTag.Trim().Replace("#", "");
+
+            // Проверка на максимальное количество тегов
+            if (Note.Tags.Count >= MaxTags)
+            {
+                tagErrorMessage = $"⚠️ Достигнуто максимальное количество тегов ({MaxTags})";
+                return;
+            }
+
             if (!Note.Tags.Contains(cleanedTag, StringComparer.OrdinalIgnoreCase))
             {
                 Note.Tags.Add(cleanedTag);
@@ -266,6 +307,8 @@
     private void RemoveTag(string tag)
     {
         Note.Tags.Remove(tag);
+        tagErrorMessage = ""; // Очищаем ошибку при удалении
+        StateHasChanged();
     }
 
     private async Task ToggleRecording()
@@ -346,14 +389,29 @@
 
     private void AddTagFromDialog()
     {
+        tagErrorMessage = ""; // Очищаем сообщение об ошибке
+
         if (!string.IsNullOrWhiteSpace(newTag))
         {
             var cleanedTag = newTag.Trim().Replace("#", "");
+
+            // Проверка на максимальное количество тегов
+            if (Note.Tags.Count >= MaxTags)
+            {
+                tagErrorMessage = $"⚠️ Достигнуто максимальное количество тегов ({MaxTags}). Удалите лишние теги перед добавлением новых.";
+                return;
+            }
+
+            // Проверка на дубликаты
             if (!Note.Tags.Contains(cleanedTag, StringComparer.OrdinalIgnoreCase))
             {
                 Note.Tags.Add(cleanedTag);
+                newTag = "";
             }
-            newTag = "";
+            else
+            {
+                tagErrorMessage = "⚠️ Такой тег уже существует";
+            }
         }
         CloseDialog();
     }
@@ -361,6 +419,7 @@
     private async Task OpenTagDialog()
     {
         newTag = ""; // Очищаем поле при открытии
+        tagErrorMessage = ""; // Очищаем сообщение об ошибке
         await JS.InvokeVoidAsync("eval", "document.getElementById('tagDialog').showModal()");
     }
 

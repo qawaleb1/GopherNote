@@ -789,3 +789,24 @@
     flex-direction: column;
     gap: 0.5rem;
 }
+
+.tag-error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    text-align: center;
+    padding: 4px;
+    border-radius: 6px;
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.tag-counter {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.tag-counter.warning {
+    color: #ef4444;
+}
