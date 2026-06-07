@@ -12,19 +12,31 @@
 
     @if (Note.Tags != null && Note.Tags.Any())
     {
+        var maxTotalTags = 11;      // Максимум тегов ВСЕГО
+        var maxVisibleTags = 5;     // Максимум видимых тегов
+        var visibleTagsCount = Math.Min(maxVisibleTags, Note.Tags.Count);
+        var visibleTags = Note.Tags.Take(visibleTagsCount).ToList();
+        var remainingTags = Note.Tags.Skip(visibleTagsCount).ToList();
+
+        // Если общее количество тегов превышает лимит, обрезаем скрытые
+        if (remainingTags.Count + visibleTags.Count > maxTotalTags)
+        {
+            var maxRemaining = maxTotalTags - visibleTags.Count;
+            remainingTags = remainingTags.Take(maxRemaining).ToList();
+        }
+
         <div class="note-tags">
-            @foreach (var tag in Note.Tags.Take(5))
+            @foreach (var tag in visibleTags)
             {
                 <span class="tag" title="@tag">#@TruncateTag(tag)</span>
             }
 
-            @if (Note.Tags.Count > 5)
+            @if (remainingTags.Any())
             {
                 <div class="tag-more">
-                    <span class="tag">+ @(Note.Tags.Count - 5)</span>
-
+                    <span class="tag">+ @remainingTags.Count</span>
                     <div class="tooltip-grid">
-                        @foreach (var tag in Note.Tags.Skip(5))
+                        @foreach (var tag in remainingTags)
                         {
                             <span class="tooltip-tag" title="@tag">#@TruncateTag(tag)</span>
                         }
