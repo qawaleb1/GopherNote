@@ -185,6 +185,21 @@
         background-color: var(--bg-card);
         border-color: var(--border-medium);
     }
+    ::-webkit-scrollbar {
+        width: 0px !important;
+        height: 0px !important;
+        background: transparent !important;
+        display: none !important;
+    }
+
+    * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+
+    body, html {
+        overflow-y: scroll !important;
+    }
 </style>
 
 @code {
