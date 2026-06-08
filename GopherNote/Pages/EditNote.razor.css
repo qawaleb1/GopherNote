@@ -276,7 +276,59 @@
     line-height: 1.6;
     overflow-y: auto;
     word-wrap: break-word;
-    backdrop-color: var(--note-white) ;
+    backdrop-color: var(--note-white);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Шаблон 1 */
+.md-preview.note-template-1 {
+    background: linear-gradient(135deg, #393a62 0%, #3b3d6b 100%);
+    border: 2px solid var(--border-light);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Шаблон 2  */
+.md-preview.note-template-2 {
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    color: var(--text-preview);
+}
+
+/* Шаблон 3 */
+.md-preview.note-template-3 {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2a4f6e 100%);
+    border: 2px solid var(--border-light);
+    color: #c5d5ea;
+}
+
+
+/* Шаблон 4 */
+.md-preview.note-template-4 {
+    background: linear-gradient(135deg, #1a4a4a 0%, #2d5f5f 100%);
+    border: 2px solid var(--border-light);
+    color: #b8dbdb;
+}
+
+/* Фикс цвета заголовков и жирного текста внутри превью для тёмных градиентов */
+.md-preview.note-template-1 .markdown-body h1,
+.md-preview.note-template-1 .markdown-body h2,
+.md-preview.note-template-1 .markdown-body h3,
+.md-preview.note-template-1 .markdown-body strong {
+    color: white;
+}
+
+.md-preview.note-template-3 .markdown-body h1,
+.md-preview.note-template-3 .markdown-body h2,
+.md-preview.note-template-3 .markdown-body h3,
+.md-preview.note-template-3 .markdown-body strong {
+    color: #e8f0fe;
+}
+
+.md-preview.note-template-4 .markdown-body h1,
+.md-preview.note-template-4 .markdown-body h2,
+.md-preview.note-template-4 .markdown-body h3,
+.md-preview.note-template-4 .markdown-body strong {
+    color: #e0f0f0;
 }
 
 /* Голосовой ввод */
