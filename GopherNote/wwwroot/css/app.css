@@ -267,3 +267,10 @@ body {
     from { transform: scale(0.92); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
+
+/* Фикс для Markdown для синтаксиса ~~текста~~ */
+.markdown-body del,
+.markdown-body s {
+    text-decoration: line-through !important;
+    opacity: 0.8; /* делает зачёркнутый текст визуально чуть бледнее */
+}
